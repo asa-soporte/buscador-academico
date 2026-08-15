@@ -38,7 +38,7 @@
         <div>
           <h1 class="font-extrabold text-base sm:text-lg text-white leading-tight flex items-center gap-2">
             <span>DOI Finder</span>
-            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#32E6E2]/20 text-[#32E6E2] border border-[#32E6E2]/30 rounded-full">v2.1</span>
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#32E6E2]/20 text-[#32E6E2] border border-[#32E6E2]/30 rounded-full">v2.5</span>
           </h1>
           <p class="text-[11px] sm:text-xs text-slate-400 line-clamp-1">Buscador Académico, Metadatos, Citas y Gestor Bibliográfico</p>
         </div>
@@ -181,7 +181,7 @@
           <div class="inline-block p-4 bg-[#32E6E2]/10 rounded-full border border-[#32E6E2]/30 text-[#32E6E2] animate-spin">
             <i data-lucide="loader-2" class="w-7 h-7 sm:w-8 sm:h-8"></i>
           </div>
-          <p class="text-slate-300 font-medium text-xs sm:text-sm">Consultando Crossref, Semantic Scholar y Unpaywall...</p>
+          <p class="text-slate-300 font-medium text-xs sm:text-sm">Consultando Crossref, Semantic Scholar, Unpaywall y OpenAlex...</p>
         </div>
 
         <div id="errorState" class="hidden bg-red-950/40 border border-red-800/60 rounded-xl p-4 sm:p-5 text-red-300 text-xs sm:text-sm flex items-start space-x-3">
@@ -205,8 +205,6 @@
             <span>Cargar Más Resultados</span>
           </button>
         </div>
-
-        <div id="articleDetailView" class="hidden"></div>
       </section>
 
     </div>
@@ -214,21 +212,26 @@
     <!-- LIBRARY PANEL -->
     <div id="panel-library" class="hidden space-y-4 sm:space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0b121c] border border-[#182635] rounded-2xl p-4 sm:p-5">
-        <div>
-          <h2 class="text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
-            <i data-lucide="bookmark" class="w-5 h-5 text-[#32E6E2]"></i>
-            <span>Mi Biblioteca Guardada</span>
-          </h2>
-          <p class="text-xs text-slate-400">Artículos guardados localmente en tu navegador</p>
+        <div class="flex items-center space-x-3">
+          <button onclick="switchTab('search')" class="p-2 bg-[#060B10] hover:bg-[#182635] border border-[#182635] text-slate-300 hover:text-[#32E6E2] rounded-xl transition-all flex items-center justify-center group" title="Volver al Buscador">
+            <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-0.5 transition-transform"></i>
+          </button>
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
+              <i data-lucide="bookmark" class="w-5 h-5 text-[#32E6E2]"></i>
+              <span>Mi Biblioteca Guardada</span>
+            </h2>
+            <p class="text-xs text-slate-400">Artículos guardados localmente en tu navegador</p>
+          </div>
         </div>
         <div class="flex flex-wrap items-center gap-2 pt-2 sm:pt-0">
-          <button onclick="exportLibrary('bibtex')" class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-all">
-            <i data-lucide="file-code" class="w-3.5 h-3.5"></i>
-            <span>Exportar .BIB</span>
+          <button onclick="switchTab('search')" class="px-3.5 py-2 bg-[#060B10] hover:bg-[#182635] border border-[#182635] text-slate-300 hover:text-white font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-all">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-[#32E6E2]"></i>
+            <span>Volver a la Lista</span>
           </button>
-          <button onclick="exportLibrary('ris')" class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-all">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i>
-            <span>Exportar .RIS</span>
+          <button onclick="exportLibrary()" class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-all shadow-md">
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+            <span>Exportar Fichas (.txt)</span>
           </button>
           <button onclick="clearLibrary()" class="px-3 py-2 bg-red-950/40 hover:bg-red-900/40 border border-red-800/60 text-red-300 rounded-lg text-xs font-semibold">
             <span>Vaciar</span>
@@ -268,6 +271,9 @@
       <div id="batchResults" class="hidden space-y-4"></div>
     </div>
 
+    <!-- SINGLE GLOBAL ARTICLE DETAIL VIEW -->
+    <div id="articleDetailView" class="hidden"></div>
+
   </main>
 
   <footer class="border-t border-[#182635] bg-[#060B10]/80 backdrop-blur-sm py-4 mt-auto">
@@ -277,6 +283,7 @@
     </div>
   </footer>
 
+  <!-- Notification Toast -->
   <div id="toast" class="fixed bottom-4 right-4 left-4 sm:left-auto sm:max-w-md bg-[#32E6E2] text-[#060B10] text-xs font-bold px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between sm:justify-start space-x-2 transition-all duration-300 opacity-0 transform translate-y-4 pointer-events-none z-50">
     <div class="flex items-center space-x-2 min-w-0">
       <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0"></i>
@@ -284,6 +291,7 @@
     </div>
   </div>
 
+  <!-- Language Selection Modal -->
   <div id="languageModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200" onclick="handleModalBackdropClick(event)">
     <div class="bg-[#0b121c] border border-[#182635] w-full max-w-md rounded-2xl p-5 shadow-2xl space-y-4 transform scale-95 transition-transform duration-200" id="languageModalCard">
       
@@ -350,14 +358,39 @@
     let currentArticleList = [];
     let totalSearchResultsCount = 0;
     let activeArticle = null;
-
-    function escapeJsQuotes(str) {
-      if (!str) return '';
-      return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    }
+    let detailOrigin = 'search';
+    let originalAbstractText = '';
+    let translatedAbstractText = '';
+    let isAbstractTranslated = false;
 
     function escapeRegExp(string) {
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function cleanDoi(doiStr) {
+      if (!doiStr) return '';
+      let cleaned = doiStr.trim();
+      cleaned = cleaned.replace(/^https?:\/\/(dx\.)?doi\.org\//i, '');
+      cleaned = cleaned.replace(/^doi:\s*/i, '');
+      cleaned = cleaned.replace(/[.,;)]+$/, '');
+      return cleaned;
+    }
+
+    function cleanAbstractText(rawText) {
+      if (!rawText) return '';
+      let cleaned = rawText.replace(/<[^>]*>?/gm, ' ');
+      try {
+        const doc = new DOMParser().parseFromString(cleaned, 'text/html');
+        cleaned = doc.body.textContent || cleaned;
+      } catch (e) {}
+      return cleaned.replace(/\s+/g, ' ').trim();
+    }
+
+    function isSpanishText(text) {
+      if (!text) return false;
+      const esWords = /\b(el|la|los|las|un|una|unos|unas|y|o|en|con|por|para|su|sus|como|del|al|esta|este|estos|estas|investigacion|estudio|analisis|desarrollo|sistema|proceso|objetivo|resultados|conclusiones|metodologia)\b/gi;
+      const matches = text.match(esWords);
+      return matches && matches.length >= 2;
     }
 
     function detectItemLanguage(title = '', abstract = '', declared = '') {
@@ -373,6 +406,122 @@
       const frWords = /\b(les|des|une|dans|pour|sur|avec|cette|plus|est|du|en|un|par|aux)\b/gi;
       if ((text.match(frWords) || []).length >= 4) return 'fr';
       return 'en';
+    }
+
+    function processCrossrefItem(item, unpaywallData = null, semanticData = null) {
+      const doi = item.DOI || '';
+      const title = Array.isArray(item.title) ? item.title[0] : (item.title || 'Sin Título');
+      
+      let authorsList = [];
+      if (item.author && Array.isArray(item.author)) {
+        authorsList = item.author.map(a => ({
+          given: a.given || '',
+          family: a.family || a.name || ''
+        }));
+      }
+
+      const authorsFormatted = authorsList.map(a => {
+        if (a.family && a.given) return `${a.family}, ${a.given}`;
+        return a.family || a.given || '';
+      }).filter(Boolean).join('; ') || 'Autor Desconocido';
+
+      const journal = Array.isArray(item['container-title']) ? item['container-title'][0] : (item['container-title'] || 'Revista / Conferencia no especificada');
+      
+      let year = 'S/F';
+      if (item.published && item.published['date-parts'] && item.published['date-parts'][0]) {
+        year = item.published['date-parts'][0][0];
+      } else if (item['published-print'] && item['published-print']['date-parts']) {
+        year = item['published-print']['date-parts'][0][0];
+      } else if (item.created && item.created['date-parts']) {
+        year = item.created['date-parts'][0][0];
+      }
+
+      let rawAbstract = item.abstract || (semanticData ? semanticData.abstract : '') || '';
+      let abstract = cleanAbstractText(rawAbstract) || 'Resumen no disponible directamente en el registro público de metadatos.';
+
+      let pdfUrl = null;
+      let isOpenAccess = false;
+
+      if (unpaywallData) {
+        isOpenAccess = unpaywallData.is_oa || false;
+        if (unpaywallData.best_oa_location && unpaywallData.best_oa_location.url_for_pdf) {
+          pdfUrl = unpaywallData.best_oa_location.url_for_pdf;
+        } else if (unpaywallData.best_oa_location && unpaywallData.best_oa_location.url) {
+          pdfUrl = unpaywallData.best_oa_location.url;
+        }
+      }
+
+      if (!pdfUrl && item.link && Array.isArray(item.link)) {
+        const pdfLink = item.link.find(l => l['content-type'] === 'application/pdf');
+        if (pdfLink) pdfUrl = pdfLink.URL;
+      }
+
+      const citationCount = item['is-referenced-by-count'] || (semanticData ? semanticData.citationCount : 0) || 0;
+      const lang = detectItemLanguage(title, abstract, item.language || '');
+
+      return {
+        doi,
+        title,
+        authors: authorsFormatted,
+        authorsList,
+        journal,
+        year: parseInt(year) || year,
+        abstract,
+        pdfUrl,
+        isOpenAccess,
+        citationCount,
+        language: lang,
+        publisher: item.publisher || 'Editorial Desconocida',
+        type: item.type || 'journal-article',
+        url: item.URL || `https://doi.org/${doi}`,
+        source: 'Crossref'
+      };
+    }
+
+    function processOpenAlexItem(item) {
+      const doi = cleanDoi(item.doi || '');
+      const title = item.title || 'Sin Título';
+      
+      const authorsList = (item.authorships || []).map(a => ({
+        given: a.author ? a.author.display_name : '',
+        family: ''
+      }));
+
+      const authorsFormatted = (item.authorships || []).map(a => a.author ? a.author.display_name : '').filter(Boolean).join('; ') || 'Autor Desconocido';
+      const journal = item.primary_location && item.primary_location.source ? item.primary_location.source.display_name : 'Publicación Académica';
+      const year = item.publication_year || 'S/F';
+
+      let abstract = 'Resumen no disponible en OpenAlex.';
+      if (item.abstract_inverted_index) {
+        const words = [];
+        Object.entries(item.abstract_inverted_index).forEach(([word, positions]) => {
+          positions.forEach(pos => words[pos] = word);
+        });
+        abstract = cleanAbstractText(words.join(' '));
+      }
+
+      const isOpenAccess = item.open_access ? item.open_access.is_oa : false;
+      const pdfUrl = item.open_access ? item.open_access.oa_url : null;
+      const citationCount = item.cited_by_count || 0;
+      const lang = detectItemLanguage(title, abstract, item.language || '');
+
+      return {
+        doi,
+        title,
+        authors: authorsFormatted,
+        authorsList,
+        journal,
+        year,
+        abstract,
+        pdfUrl,
+        isOpenAccess,
+        citationCount,
+        language: lang,
+        publisher: 'OpenAlex Open Data',
+        type: item.type || 'journal-article',
+        url: item.doi || `https://doi.org/${doi}`,
+        source: 'OpenAlex'
+      };
     }
 
     async function fetchArticleFullDetails(doi) {
@@ -426,12 +575,6 @@
       throw new Error(`No se pudieron obtener los detalles del DOI: ${cleanDoiStr}`);
     }
 
-    async function loadMoreResults() {
-      const targetRows = parseInt(document.getElementById('filterRowsCount')?.value || '10');
-      currentOffset += targetRows;
-      handleSearch(null, true);
-    }
-
     function matchesSearchQueryPrecisely(item, query) {
       if (!query) return true;
       const cleanQ = query.trim().toLowerCase();
@@ -439,21 +582,17 @@
 
       const normQ = cleanQ.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-      // Modo de búsqueda específico por autor: validación estricta en el campo de autores
       if (currentSearchMode === 'author') {
         const normAuthors = (item.authors || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         const authorTokens = normQ.split(/[\s,.-]+/).filter(t => t.length > 0);
         if (authorTokens.length === 0) return true;
 
-        // Extraer apellidos/palabras principales (>= 3 letras) e iniciales/nombres (< 3 letras)
         const mainWords = authorTokens.filter(t => t.length >= 3);
         const initials = authorTokens.filter(t => t.length < 3 && /[a-z]/i.test(t));
 
-        // Todos los apellidos/palabras principales deben estar presentes en el autor
         const allMainWordsMatch = mainWords.length === 0 || mainWords.every(word => normAuthors.includes(word));
         if (!allMainWordsMatch) return false;
 
-        // Si se especificó inicial de nombre (ej: "M" en "Ramírez Ramírez, M"), verificar con los autores
         if (initials.length > 0 && item.authorsList && item.authorsList.length > 0) {
           const matchesAuthorWithInitial = item.authorsList.some(a => {
             const familyNorm = (a.family || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -482,23 +621,21 @@
       const journal = (item.journal || '').toLowerCase();
       const authors = (item.authors || '').toLowerCase();
 
-      const normQFull = normQ;
       const fullText = `${title} ${abstract} ${journal} ${authors}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-      const queryTerms = normQFull.split(/\s+/).map(t => t.replace(/[^a-z0-9]/g, '')).filter(t => t.length > 1);
-      if (queryTerms.length === 0) return fullText.includes(normQFull);
+      const queryTerms = normQ.split(/\s+/).map(t => t.replace(/[^a-z0-9]/g, '')).filter(t => t.length > 1);
+      
+      if (queryTerms.length === 0) return fullText.includes(normQ);
 
       const matchesTerm = (term, text) => {
         const regex = new RegExp(`\\b${escapeRegExp(term)}\\b`, 'i');
         if (regex.test(text)) return true;
-
-        if (term.endsWith('es')) {
+        if (term.endsWith('es') && term.length > 3) {
           const singular = term.slice(0, -2);
-          if (singular.length > 1 && new RegExp(`\\b${escapeRegExp(singular)}\\b`, 'i').test(text)) return true;
+          if (new RegExp(`\\b${escapeRegExp(singular)}\\b`, 'i').test(text)) return true;
         }
-        if (term.endsWith('s')) {
+        if (term.endsWith('s') && term.length > 2) {
           const singular = term.slice(0, -1);
-          if (singular.length > 1 && new RegExp(`\\b${escapeRegExp(singular)}\\b`, 'i').test(text)) return true;
+          if (new RegExp(`\\b${escapeRegExp(singular)}\\b`, 'i').test(text)) return true;
         }
         return false;
       };
@@ -508,7 +645,7 @@
       if (queryTerms.length <= 2) {
         return matchedCount >= queryTerms.length;
       }
-      return matchedCount >= Math.max(2, Math.ceil(queryTerms.length * 0.6));
+      return matchedCount >= Math.max(2, Math.ceil(queryTerms.length * 0.5));
     }
 
     function calculateRelevanceScore(item, query) {
@@ -534,25 +671,19 @@
       const fullInTitle = title.includes(normQ);
       const fullInAbstract = abstract.includes(normQ);
 
-      if (title === normQ) {
-        score += 600;
-      } else if (fullInTitle) {
-        score += 450;
-      } else if (fullInAbstract) {
-        score += 250;
-      }
+      if (title === normQ) score += 600;
+      else if (fullInTitle) score += 450;
+      else if (fullInAbstract) score += 250;
 
       if (terms.length === 0) return score;
 
       let titleTermMatches = 0;
       let authorTermMatches = 0;
       let abstractTermMatches = 0;
-      let journalTermMatches = 0;
 
       terms.forEach(term => {
         if (title.includes(term)) titleTermMatches++;
         if (authors.includes(term)) authorTermMatches++;
-        if (journal.includes(term)) journalTermMatches++;
         if (abstract.includes(term)) abstractTermMatches++;
       });
 
@@ -563,18 +694,9 @@
       score += titleRatio * 250;
       score += overallRatio * 150;
 
-      if (overallRatio === 1) score += 200;
-      if (titleRatio === 1) score += 250;
-
-      if (terms.length >= 3 && overallRatio < 0.5) {
-        score *= 0.15;
-      }
-
-      if (currentSearchMode === 'title' && titleTermMatches > 0) score += titleRatio * 100;
       if (currentSearchMode === 'author') {
         const authorRatio = terms.length > 0 ? (authorTermMatches / terms.length) : 0;
         score += authorRatio * 600;
-        if (authorRatio === 1) score += 400;
       }
 
       score += Math.min(item.citationCount || 0, 300) * 0.05;
@@ -582,580 +704,196 @@
       return score;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      updateLibraryBadge();
-
-      // Sync select input in advanced filters with language state
-      const filterLangSelect = document.getElementById('filterLanguage');
-      if (filterLangSelect) {
-        filterLangSelect.addEventListener('change', (e) => {
-          const selectedOption = e.target.options[e.target.selectedIndex];
-          selectQuickLanguage(e.target.value, selectedOption.text, false);
-        });
-      }
-    });
-
-    function openLanguageModal() {
-      const modal = document.getElementById('languageModal');
-      const card = document.getElementById('languageModalCard');
-      if (!modal || !card) return;
-
-      modal.classList.remove('hidden');
-      setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        card.classList.remove('scale-95');
-        card.classList.add('scale-100');
-      }, 10);
-    }
-
-    function closeLanguageModal() {
-      const modal = document.getElementById('languageModal');
-      const card = document.getElementById('languageModalCard');
-      if (!modal || !card) return;
-
-      modal.classList.add('opacity-0');
-      card.classList.remove('scale-100');
-      card.classList.add('scale-95');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 200);
-    }
-
-    function handleModalBackdropClick(e) {
-      if (e.target.id === 'languageModal') {
-        closeLanguageModal();
-      }
-    }
-
-    function selectQuickLanguage(code, labelText, close = true) {
-      currentSearchLanguage = code;
-      
-      // Update quick button label
-      const quickLabel = document.getElementById('quickLangLabel');
-      if (quickLabel) quickLabel.textContent = labelText;
-
-      // Sync advanced filter dropdown
-      const filterLangSelect = document.getElementById('filterLanguage');
-      if (filterLangSelect && filterLangSelect.value !== code) {
-        filterLangSelect.value = code;
-      }
-
-      // Update modal selection UI highlighting
-      const buttons = document.querySelectorAll('.lang-option-btn');
-      buttons.forEach(btn => {
-        const lang = btn.getAttribute('data-lang');
-        if (lang === code) {
-          btn.className = "lang-option-btn p-3 rounded-xl border border-[#32E6E2] bg-[#32E6E2]/10 text-[#32E6E2] font-bold text-left flex items-center space-x-2.5 transition-all";
-        } else {
-          btn.className = "lang-option-btn p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all";
-        }
-      });
-
-      if (close) {
-        closeLanguageModal();
-        showToast(`Idioma seleccionado: ${labelText}`);
-      }
-    }
-
-    function parseAbstract(rawAbstract) {
-      if (!rawAbstract) return { original: 'Resumen no disponible.', spanish: '', isSpanishAvailable: false };
-      
-      let original = rawAbstract.replace(/<[^>]*>?/gm, '').trim();
-      let spanish = '';
-
-      try {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(rawAbstract, 'text/html');
-        
-        const titles = doc.querySelectorAll('title, jats\\:title, h1, h2, h3, h4, strong, b');
-        for (const t of titles) {
-          if (/^resumen$/i.test(t.textContent.trim())) {
-            const parent = t.parentElement;
-            if (parent) {
-              spanish = parent.textContent.replace(/^resumen/i, '').trim();
-            }
-            break;
-          }
-        }
-
-        if (!spanish) {
-          const match = rawAbstract.match(/(?:<jats:title>|<b>|<strong>)?\s*(?:Resumen|RESUMEN)\s*(?:<\/jats:title>|<\/b>|<\/strong>)?[\s:-]*(.*?)(?=(?:<jats:title>|<b>|<strong>)?\s*(?:Abstract|ABSTRACT|Keywords|Palabras clave)|$)/is);
-          if (match && match[1]) {
-            const candidate = match[1].replace(/<[^>]*>?/gm, '').trim();
-            if (candidate.length > 30) {
-              spanish = candidate;
-            }
-          }
-        }
-
-        if (!spanish && isSpanishText(original)) {
-          spanish = original;
-        }
-      } catch (e) {
-        if (isSpanishText(original)) {
-          spanish = original;
-        }
-      }
-
-      return {
-        original: original,
-        spanish: spanish,
-        isSpanishAvailable: Boolean(spanish)
-      };
-    }
-
-    function isSpanishText(text) {
-      if (!text || text.length < 40) return false;
-      const spanishWords = /\b(el|la|los|las|un|una|unos|unas|del|al|que|en|y|por|para|con|se|su|sus|como|más|este|esta|estos|estas|entre|sobre|estudio|resultados|métodos|objetivo|conclusiones|investigación)\b/gi;
-      const matches = text.match(spanishWords) || [];
-      return matches.length >= 4;
-    }
-
-    function switchTab(tab) {
-      ['search', 'library', 'batch'].forEach(t => {
-        document.getElementById(`panel-${t}`).classList.add('hidden');
-        const btn = document.getElementById(`tab-${t}`);
-        btn.className = "tab-btn px-3 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-slate-400 hover:text-white flex items-center justify-center space-x-1.5 transition-all whitespace-nowrap flex-1 sm:flex-initial";
-      });
-
-      document.getElementById(`panel-${tab}`).classList.remove('hidden');
-      const activeBtn = document.getElementById(`tab-${tab}`);
-      activeBtn.className = "tab-btn active px-3 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[#060B10] bg-[#32E6E2] font-bold shadow-sm flex items-center justify-center space-x-1.5 transition-all whitespace-nowrap flex-1 sm:flex-initial";
-
-      if (tab === 'library') renderLibrary();
-    }
-
-    function setSearchMode(mode) {
-      currentSearchMode = mode;
-      ['auto', 'title', 'author', 'doi'].forEach(m => {
-        const btn = document.getElementById(`mode-${m}`);
-        if (m === mode) {
-          btn.className = "mode-btn px-2.5 sm:px-3 py-1 rounded-lg border text-[#060B10] bg-[#32E6E2] font-bold border-[#32E6E2] whitespace-nowrap";
-        } else {
-          btn.className = "mode-btn px-2.5 sm:px-3 py-1 rounded-lg border border-[#182635] bg-[#060B10] text-slate-400 hover:text-white whitespace-nowrap";
-        }
-      });
-    }
-
-    function toggleFilters() {
-      const filters = document.getElementById('advancedFilters');
-      const chevron = document.getElementById('filterChevron');
-      filters.classList.toggle('hidden');
-      chevron.classList.toggle('rotate-180');
-    }
-
-    function quickSearch(q) {
-      document.getElementById('searchInput').value = q;
-      handleSearch(new Event('submit'));
-    }
-
-    function cleanDoi(str) {
-      return str.trim().replace(/^https?:\/\/(dx\.)?doi\.org\//, '');
-    }
-
-    function isDoi(str) {
-      return /^10\.\d{4,9}\/[-._;()/:A-Za-z0-9]+$/i.test(cleanDoi(str));
-    }
-
-    async function handleSearch(e, isLoadMore = false) {
+    async function handleSearch(e = null, isLoadMore = false) {
       if (e) e.preventDefault();
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) return;
+
+      const queryInput = document.getElementById('searchInput').value.trim();
+      if (!queryInput) {
+        showToast('Por favor, ingresa un término de búsqueda o DOI');
+        return;
+      }
 
       const resultsSection = document.getElementById('resultsSection');
       const loadingState = document.getElementById('loadingState');
       const errorState = document.getElementById('errorState');
       const resultsList = document.getElementById('resultsList');
-      const articleDetailView = document.getElementById('articleDetailView');
       const loadMoreContainer = document.getElementById('loadMoreContainer');
-      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      const detailView = document.getElementById('articleDetailView');
+
+      resultsSection.classList.remove('hidden');
+      detailView.classList.add('hidden');
+      detailView.innerHTML = '';
 
       if (!isLoadMore) {
         currentOffset = 0;
         currentArticleList = [];
         resultsList.innerHTML = '';
-      } else if (loadMoreBtn) {
-        loadMoreBtn.disabled = true;
-        loadMoreBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Cargando más...</span>`;
-        lucide.createIcons();
       }
 
-      resultsSection.classList.remove('hidden');
-      if (!isLoadMore) loadingState.classList.remove('hidden');
+      loadingState.classList.remove('hidden');
       errorState.classList.add('hidden');
-      articleDetailView.classList.add('hidden');
+      loadMoreContainer.classList.add('hidden');
 
-      const isDirectDoi = currentSearchMode === 'doi' || (currentSearchMode === 'auto' && isDoi(query));
+      const targetRows = parseInt(document.getElementById('filterRowsCount')?.value || '10');
+      const langFilter = currentSearchLanguage;
+      const yearMin = parseInt(document.getElementById('filterYearMin')?.value) || null;
+      const yearMax = parseInt(document.getElementById('filterYearMax')?.value) || null;
+      const oaOnly = document.getElementById('filterOpenAccess')?.value === 'oa';
+
+      const doiPattern = /^10\.\d{4,9}\/[-._;()/:A-Za-z0-9]+$/i;
+      const isDoiQuery = doiPattern.test(cleanDoi(queryInput)) || queryInput.includes('doi.org/');
+
+      if (currentSearchMode === 'doi' || (currentSearchMode === 'auto' && isDoiQuery)) {
+        try {
+          const singleArticle = await fetchArticleFullDetails(cleanDoi(queryInput));
+          currentArticleList = [singleArticle];
+          totalSearchResultsCount = 1;
+          renderSearchResults();
+          loadingState.classList.add('hidden');
+          return;
+        } catch (err) {
+          console.warn('Direct DOI search failed, falling back to query search:', err);
+        }
+      }
+
+      let crossrefUrl = `https://api.crossref.org/works?rows=${targetRows * 2}&offset=${currentOffset}&mailto=academic.search@asa-soporte.com`;
+
+      if (currentSearchMode === 'author') {
+        crossrefUrl += `&query.author=${encodeURIComponent(queryInput)}`;
+      } else if (currentSearchMode === 'title') {
+        crossrefUrl += `&query.title=${encodeURIComponent(queryInput)}`;
+      } else {
+        crossrefUrl += `&query=${encodeURIComponent(queryInput)}`;
+      }
+
+      if (yearMin || yearMax) {
+        const fromDate = yearMin ? `${yearMin}-01-01` : '1900-01-01';
+        const toDate = yearMax ? `${yearMax}-12-31` : '2026-12-31';
+        crossrefUrl += `&filter=from-pub-date:${fromDate},until-pub-date:${toDate}`;
+      }
+
+      let fetchedItems = [];
 
       try {
-        if (isDirectDoi) {
-          const doi = cleanDoi(query);
-          const article = await fetchArticleFullDetails(doi);
-          loadingState.classList.add('hidden');
-          if (loadMoreContainer) loadMoreContainer.classList.add('hidden');
-          displaySingleArticle(article);
-        } else {
-          let queryParam = 'query';
-          if (currentSearchMode === 'title') queryParam = 'query.title';
-          if (currentSearchMode === 'author') queryParam = 'query.author';
-
-          const targetRows = parseInt(document.getElementById('filterRowsCount')?.value || '10');
-          const fetchBufferRows = Math.max(targetRows * 3, 30);
-          
-          const filters = [];
-          const yearMin = document.getElementById('filterYearMin')?.value;
-          const yearMax = document.getElementById('filterYearMax')?.value;
-          if (yearMin) filters.push(`from-pub-date:${yearMin}-01-01`);
-          if (yearMax) filters.push(`until-pub-date:${yearMax}-12-31`);
-
-          const targetLang = document.getElementById('filterLanguage')?.value || currentSearchLanguage;
-
-          let items = [];
-
-          if (targetLang && targetLang !== 'all') {
-            try {
-              const alexData = await fetchFromOpenAlex(query, fetchBufferRows, currentOffset, currentSearchMode);
-              items = alexData.items;
-              totalSearchResultsCount = alexData.total;
-            } catch (errOpenAlex) {
-              console.warn('Error en consulta inicial de OpenAlex, intentando Crossref:', errOpenAlex);
-            }
-
-            if (items.length === 0) {
-              let apiUrl = `https://api.crossref.org/works?${queryParam}=${encodeURIComponent(query)}&rows=${fetchBufferRows}&offset=${currentOffset}&mailto=academic.search@asa-soporte.com`;
-              if (filters.length > 0) apiUrl += `&filter=${filters.join(',')}`;
-              const res = await fetch(apiUrl);
-              if (res.ok) {
-                const data = await res.json();
-                const rawItems = data.message?.items || [];
-                totalSearchResultsCount = data.message?.['total-results'] || rawItems.length;
-                items = rawItems.map(item => processCrossrefItem(item));
-              }
-            }
-          } else {
-            let apiUrl = `https://api.crossref.org/works?${queryParam}=${encodeURIComponent(query)}&rows=${fetchBufferRows}&offset=${currentOffset}&mailto=academic.search@asa-soporte.com`;
-            if (filters.length > 0) apiUrl += `&filter=${filters.join(',')}`;
-
-            try {
-              const res = await fetch(apiUrl);
-              if (!res.ok) throw new Error(`Crossref respondió con estado ${res.status}`);
-              const data = await res.json();
-              const rawItems = data.message?.items || [];
-              totalSearchResultsCount = data.message?.['total-results'] || rawItems.length;
-              items = rawItems.map(item => processCrossrefItem(item));
-            } catch (primaryErr) {
-              console.warn('Crossref no disponible, usando respaldo OpenAlex:', primaryErr);
-              const alexData = await fetchFromOpenAlex(query, fetchBufferRows, currentOffset, currentSearchMode);
-              items = alexData.items;
-              totalSearchResultsCount = alexData.total;
-            }
-          }
-
-          // Apply strict language filter
-          if (targetLang && targetLang !== 'all') {
-            items = items.filter(i => {
-              const detected = i.detectedLanguage || detectItemLanguage(i.title, i.abstract, i.declaredLanguage);
-              return detected === targetLang;
-            });
-          }
-
-          // Apply strict word boundary matching for exact query search
-          items = items.filter(i => matchesSearchQueryPrecisely(i, query));
-
-          // Asignar puntuación de relevancia y ordenar los resultados descendentemente
-          items.forEach(i => {
-            i.relevanceScore = calculateRelevanceScore(i, query);
-          });
-          items.sort((a, b) => b.relevanceScore - a.relevanceScore);
-
-          items = items.slice(0, targetRows);
-
-          const filterOA = document.getElementById('filterOpenAccess')?.value;
-          if (filterOA === 'oa') {
-            items = items.filter(i => i.isOpenAccess || i.pdfUrl || i.citationCount > 0);
-          }
-
-          loadingState.classList.add('hidden');
-          if (items.length === 0 && !isLoadMore) throw new Error('No se encontraron artículos que coincidan exactamente con la búsqueda, idioma y filtros seleccionados.');
-
-          if (isLoadMore) {
-            currentArticleList = [...currentArticleList, ...items];
-          } else {
-            currentArticleList = items;
-          }
-
-          displayMultipleResults(currentArticleList, query, totalSearchResultsCount);
-
-          if (loadMoreContainer) {
-            if (currentArticleList.length < totalSearchResultsCount && items.length > 0) {
-              loadMoreContainer.classList.remove('hidden');
-            } else {
-              loadMoreContainer.classList.add('hidden');
-            }
-          }
+        const res = await fetch(crossrefUrl);
+        if (res.ok) {
+          const data = await res.json();
+          totalSearchResultsCount = data.message['total-results'] || 0;
+          fetchedItems = (data.message.items || []).map(item => processCrossrefItem(item));
         }
       } catch (err) {
+        console.warn('Crossref query failed, attempting OpenAlex fallback:', err);
+      }
+
+      if (fetchedItems.length === 0) {
+        try {
+          let alexUrl = `https://api.openalex.org/works?per-page=${targetRows * 2}&search=${encodeURIComponent(queryInput)}`;
+          if (currentSearchMode === 'author') {
+            alexUrl = `https://api.openalex.org/works?per-page=${targetRows * 2}&filter=author.search:${encodeURIComponent(queryInput)}`;
+          }
+          const alexRes = await fetch(alexUrl);
+          if (alexRes.ok) {
+            const alexData = await alexRes.json();
+            totalSearchResultsCount = alexData.meta ? alexData.meta.count : alexData.results.length;
+            fetchedItems = alexData.results.map(item => processOpenAlexItem(item));
+          }
+        } catch (err) {
+          console.warn('OpenAlex query error:', err);
+        }
+      }
+
+      let processed = fetchedItems.filter(item => matchesSearchQueryPrecisely(item, queryInput));
+
+      if (langFilter !== 'all') {
+        processed = processed.filter(item => item.language === langFilter);
+      }
+      if (yearMin) {
+        processed = processed.filter(item => typeof item.year === 'number' && item.year >= yearMin);
+      }
+      if (yearMax) {
+        processed = processed.filter(item => typeof item.year === 'number' && item.year <= yearMax);
+      }
+      if (oaOnly) {
+        processed = processed.filter(item => item.isOpenAccess || item.pdfUrl);
+      }
+
+      processed.forEach(item => {
+        item.relevanceScore = calculateRelevanceScore(item, queryInput);
+      });
+      processed.sort((a, b) => b.relevanceScore - a.relevanceScore);
+
+      if (processed.length === 0) {
         loadingState.classList.add('hidden');
         if (!isLoadMore) {
           errorState.classList.remove('hidden');
-          document.getElementById('errorMessage').textContent = err.message || 'Error de conexión con los repositorios académicos.';
+          document.getElementById('errorMessage').innerText = 'No se encontraron artículos con los criterios o filtros seleccionados.';
+          resultsList.classList.add('hidden');
         } else {
-          showToast('No se pudieron obtener más resultados.');
+          showToast('No se encontraron más resultados.');
         }
-      } finally {
-        if (loadMoreBtn) {
-          loadMoreBtn.disabled = false;
-          loadMoreBtn.innerHTML = `<i data-lucide="plus-circle" class="w-4 h-4"></i><span>Cargar Más Resultados</span>`;
-          lucide.createIcons();
-        }
+        return;
+      }
+
+      if (isLoadMore) {
+        currentArticleList = [...currentArticleList, ...processed];
+      } else {
+        currentArticleList = processed;
+      }
+
+      loadingState.classList.add('hidden');
+      renderSearchResults();
+
+      if (currentArticleList.length < totalSearchResultsCount) {
+        loadMoreContainer.classList.remove('hidden');
+      } else {
+        loadMoreContainer.classList.add('hidden');
       }
     }
 
-    async function fetchFromOpenAlex(query, rows, offset, mode) {
-      const page = Math.floor(offset / rows) + 1;
-      let alexFilters = [];
-
-      const targetLang = document.getElementById('filterLanguage')?.value || currentSearchLanguage;
-      if (targetLang && targetLang !== 'all') {
-        alexFilters.push(`language:${targetLang}`);
-      }
-
-      if (mode === 'title') {
-        alexFilters.push(`title.search:${encodeURIComponent(query)}`);
-      } else if (mode === 'author') {
-        alexFilters.push(`authorships.author.display_name.search:${encodeURIComponent(query)}`);
-      }
-
-      let alexUrl = `https://api.openalex.org/works?search=${encodeURIComponent(query)}&per_page=${rows}&page=${page}`;
-      if (alexFilters.length > 0) {
-        alexUrl += `&filter=${alexFilters.join(',')}`;
-      }
-
-      const res = await fetch(alexUrl);
-      if (!res.ok) throw new Error('Error de respuesta en motor alternativo OpenAlex.');
-      const data = await res.json();
-      
-      const items = (data.results || []).map(item => processOpenAlexItem(item));
-      return {
-        items,
-        total: data.meta?.count || items.length
-      };
-    }
-
-    function reconstructOpenAlexAbstract(invertedIndex) {
-      if (!invertedIndex) return null;
-      const wordPositions = [];
-      for (const [word, positions] of Object.entries(invertedIndex)) {
-        for (const pos of positions) {
-          wordPositions.push([pos, word]);
-        }
-      }
-      wordPositions.sort((a, b) => a[0] - b[0]);
-      return wordPositions.map(p => p[1]).join(' ');
-    }
-
-    function processOpenAlexItem(item) {
-      const title = item.title || 'Título no disponible';
-      const journal = item.primary_location?.source?.display_name || 'Revista / Publicación';
-      const year = item.publication_year || 's.f.';
-      const doi = item.doi ? cleanDoi(item.doi) : (item.id ? item.id.replace('https://openalex.org/', '') : '');
-      const volume = item.biblio?.volume || '';
-      const issue = item.biblio?.issue || '';
-      const page = item.biblio?.first_page ? `${item.biblio.first_page}-${item.biblio.last_page || ''}` : '';
-
-      const authorsList = (item.authorships || []).map(a => ({
-        family: a.author?.display_name?.split(' ').pop() || 'Autor',
-        given: a.author?.display_name?.split(' ')[0] || ''
-      }));
-
-      const authorsFormatted = authorsList.length > 0
-        ? authorsList.map(a => `${a.family}, ${a.given.charAt(0)}.`).join('; ')
-        : 'Autor desconocido';
-
-      const rawAbstract = reconstructOpenAlexAbstract(item.abstract_inverted_index);
-      const parsedAbstract = parseAbstract(rawAbstract);
-
-      const declaredLanguage = item.language || '';
-      const detectedLanguage = detectItemLanguage(title, parsedAbstract.original, declaredLanguage);
-
-      const apa = `${authorsFormatted} (${year}). ${title}. ${journal}${volume ? `, ${volume}` : ''}${issue ? `(${issue})` : ''}${page ? `, ${page}` : ''}. https://doi.org/${doi}`;
-      const mla = `${authorsList[0]?.family || 'Ref'}, ${authorsList[0]?.given || ''}. "${title}." ${journal}, vol. ${volume || '1'}, no. ${issue || '1'}, ${year}, pp. ${page || '1-10'}.`;
-      const ieee = `${authorsFormatted}, "${title}," ${journal}, vol. ${volume || '1'}, no. ${issue || '1'}, pp. ${page || '1-10'}, ${year}.`;
-      const chicago = `${authorsFormatted}. "${title}." ${journal} ${volume}${issue ? `, no. ${issue}` : ''} (${year}): ${page || '1-10'}.`;
-
-      const firstAuthorKey = (authorsList[0]?.family || 'Ref').replace(/\s+/g, '');
-      const bibtex = `@article{${firstAuthorKey}${year},\n  title = {${title}},\n  author = {${authorsList.map(a => `${a.family}, ${a.given}`).join(' and ')}},\n  journal = {${journal}},\n  year = {${year}},\n${volume ? `  volume = {${volume}},\n` : ''}${issue ? `  number = {${issue}},\n` : ''}${page ? `  pages = {${page}},\n` : ''}  doi = {${doi}}\n}`;
-      const ris = `TY  - JOUR\nTI  - ${title}\nAU  - ${authorsFormatted}\nJO  - ${journal}\nPY  - ${year}\nVL  - ${volume}\nIS  - ${issue}\nSP  - ${page}\nDO  - ${doi}\nER  -`;
-
-      return {
-        id: doi || item.id,
-        title,
-        journal,
-        year,
-        doi,
-        volume,
-        issue,
-        page,
-        authors: authorsFormatted,
-        authorsList,
-        isOpenAccess: item.open_access?.is_oa || false,
-        pdfUrl: item.open_access?.oa_url || item.primary_location?.pdf_url || null,
-        publisherUrl: item.doi || item.primary_location?.landing_page_url || `https://doi.org/${doi}`,
-        citationCount: item.cited_by_count || 0,
-        abstract: parsedAbstract.original,
-        spanishAbstract: parsedAbstract.spanish,
-        isSpanishAvailable: parsedAbstract.isSpanishAvailable,
-        declaredLanguage,
-        detectedLanguage,
-        tldr: null,
-        apa, mla, ieee, chicago, bibtex, ris
-      };
-    }
-
-    function processCrossrefItem(item, oaData = null, semanticData = null) {
-      const title = (item.title && item.title.length > 0) ? item.title[0] : 'Título no disponible';
-      const journal = (item['container-title'] && item['container-title'].length > 0) ? item['container-title'][0] : (item.publisher || 'Editorial / Revista no indicada');
-      
-      const year = item.published?.['date-parts']?.[0]?.[0] || item.created?.['date-parts']?.[0]?.[0] || item.issued?.['date-parts']?.[0]?.[0] || 's.f.';
-      
-      const volume = item.volume || '';
-      const issue = item.issue || '';
-      const page = item.page || '';
-      const doi = item.DOI || '';
-      const authorsList = item.author || [];
-
-      const authorsFormatted = authorsList.length > 0
-        ? authorsList.map(a => `${a.family || ''}, ${(a.given || '').charAt(0)}.`).join('; ')
-        : 'Autor desconocido';
-
-      const rawAbstract = semanticData?.abstract || item.abstract || null;
-      const parsedAbstract = parseAbstract(rawAbstract);
-
-      const declaredLanguage = item.language || '';
-      const detectedLanguage = detectItemLanguage(title, parsedAbstract.original, declaredLanguage);
-
-      const apa = `${authorsFormatted} (${year}). ${title}. ${journal}${volume ? `, ${volume}` : ''}${issue ? `(${issue})` : ''}${page ? `, ${page}` : ''}. https://doi.org/${doi}`;
-      const mla = `${authorsList[0]?.family || 'Ref'}, ${authorsList[0]?.given || ''}. "${title}." ${journal}, vol. ${volume || '1'}, no. ${issue || '1'}, ${year}, pp. ${page || '1-10'}.`;
-      const ieee = `${authorsFormatted}, "${title}," ${journal}, vol. ${volume || '1'}, no. ${issue || '1'}, pp. ${page || '1-10'}, ${year}.`;
-      const chicago = `${authorsFormatted}. "${title}." ${journal} ${volume}${issue ? `, no. ${issue}` : ''} (${year}): ${page || '1-10'}.`;
-
-      const firstAuthorKey = (authorsList[0]?.family || 'Ref').replace(/\s+/g, '');
-      const bibtex = `@article{${firstAuthorKey}${year},\n  title = {${title}},\n  author = {${authorsList.map(a => `${a.family || ''}, ${a.given || ''}`).join(' and ')}},\n  journal = {${journal}},\n  year = {${year}},\n${volume ? `  volume = {${volume}},\n` : ''}${issue ? `  number = {${issue}},\n` : ''}${page ? `  pages = {${page}},\n` : ''}  doi = {${doi}}\n}`;
-      const ris = `TY  - JOUR\nTI  - ${title}\nAU  - ${authorsFormatted}\nJO  - ${journal}\nPY  - ${year}\nVL  - ${volume}\nIS  - ${issue}\nSP  - ${page}\nDO  - ${doi}\nER  -`;
-
-      return {
-        id: doi,
-        title,
-        journal,
-        year,
-        doi,
-        volume,
-        issue,
-        page,
-        authors: authorsFormatted,
-        authorsList,
-        isOpenAccess: oaData?.is_oa || Boolean(item.is_oa),
-        pdfUrl: oaData?.best_oa_location?.url_for_pdf || null,
-        publisherUrl: item.URL || `https://doi.org/${doi}`,
-        citationCount: semanticData?.citationCount || item['is-referenced-by-count'] || 0,
-        abstract: parsedAbstract.original,
-        spanishAbstract: parsedAbstract.spanish,
-        isSpanishAvailable: parsedAbstract.isSpanishAvailable,
-        declaredLanguage,
-        detectedLanguage,
-        tldr: semanticData?.tldr?.text || null,
-        apa, mla, ieee, chicago, bibtex, ris
-      };
-    }
-
-    function displayMultipleResults(items, searchTerms, totalCount = null) {
+    function renderSearchResults() {
       const resultsList = document.getElementById('resultsList');
-      const articleDetailView = document.getElementById('articleDetailView');
+      const resultsBadge = document.getElementById('resultsBadge');
       
-      document.getElementById('resultsTitle').textContent = `Resultados para "${searchTerms}"`;
-      const totalText = totalCount ? ` de ${totalCount.toLocaleString()}` : '';
-      document.getElementById('resultsSubtitle').textContent = `Mostrando ${items.length}${totalText} artículos validados por idioma y precisión de términos.`;
-      document.getElementById('resultsBadge').innerHTML = `<span class="px-2.5 py-1 bg-[#0b121c] text-[#32E6E2] border border-[#182635] rounded-md text-xs font-semibold">${items.length}${totalText} Encontrados</span>`;
-
       resultsList.innerHTML = '';
-      articleDetailView.classList.add('hidden');
       resultsList.classList.remove('hidden');
 
-      const langMap = { es: '🇪🇸 ES', en: '🇬🇧 EN', pt: '🇵🇹 PT', fr: '🇫🇷 FR', de: '🇩🇪 DE', it: '🇮🇹 IT' };
+      resultsBadge.innerHTML = `
+        <span class="px-3 py-1 bg-[#32E6E2]/10 border border-[#32E6E2]/30 text-[#32E6E2] text-xs font-mono font-bold rounded-full">
+          ${currentArticleList.length} resultados mostrados
+        </span>
+      `;
 
-      // Normalizar términos de búsqueda para verificación de cobertura
-      const normSearch = (searchTerms || '').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      const searchTermsList = normSearch.split(/\s+/).map(t => t.replace(/[^a-z0-9]/g, '')).filter(t => t.length > 1);
-
-      items.forEach((item, index) => {
-        const isSaved = savedLibrary.some(s => s.doi === item.doi);
-        const langBadgeText = langMap[item.detectedLanguage] || (item.detectedLanguage ? item.detectedLanguage.toUpperCase() : '🌐');
+      currentArticleList.forEach((article, idx) => {
+        const isSaved = savedLibrary.some(a => cleanDoi(a.doi) === cleanDoi(article.doi));
         
-        // Determinar si es "Alta Coincidencia" de forma estricta basada en la frase completa o cobertura >= 80% en título
-        const itemTitleNorm = (item.title || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const itemAbstractNorm = (item.abstract || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        
-        const hasExactPhrase = normSearch && (itemTitleNorm.includes(normSearch) || itemAbstractNorm.includes(normSearch));
-        
-        let titleMatchesCount = 0;
-        if (searchTermsList.length > 0) {
-          searchTermsList.forEach(t => { if (itemTitleNorm.includes(t)) titleMatchesCount++; });
-        }
-        const titleCoverage = searchTermsList.length > 0 ? (titleMatchesCount / searchTermsList.length) : 0;
-
-        const isHighRelevance = hasExactPhrase || (titleCoverage >= 0.8 && searchTermsList.length > 1) || (item.relevanceScore >= 400);
-
         const card = document.createElement('div');
-        card.className = "bg-[#0b121c] border border-[#182635] hover:border-[#32E6E2]/50 rounded-xl p-3.5 sm:p-4 transition-all group animate-fade-in";
-        card.style.animationDelay = `${index * 40}ms`;
-
+        card.className = 'bg-[#0b121c] border border-[#182635] hover:border-[#32E6E2]/50 rounded-xl p-4 sm:p-5 transition-all duration-200 shadow-md group relative animate-fade-in';
         card.innerHTML = `
-          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
-            <div class="space-y-1.5 flex-1 min-w-0">
-              <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <span class="px-2 py-0.5 bg-[#060B10] text-[#32E6E2] border border-[#182635] rounded text-[10px] sm:text-[11px] font-mono font-semibold break-all max-w-full">
-                  DOI: ${item.doi}
-                </span>
-                <span class="px-1.5 py-0.5 bg-[#182635] text-slate-300 rounded text-[10px] font-bold">
-                  ${langBadgeText}
-                </span>
-                ${isHighRelevance ? `
-                  <span class="px-1.5 py-0.5 bg-[#32E6E2]/10 text-[#32E6E2] border border-[#32E6E2]/30 rounded text-[10px] font-extrabold flex items-center gap-1">
-                    <i data-lucide="sparkles" class="w-3 h-3"></i> Alta Coincidencia
-                  </span>
-                ` : ''}
-                <span class="text-[11px] sm:text-xs text-slate-400">
-                  ${item.year} • <span class="italic text-slate-300">${item.journal}</span>
-                </span>
-                ${item.citationCount > 0 ? `
-                  <span class="text-[10px] sm:text-[11px] bg-amber-950/60 text-amber-400 border border-amber-800/50 px-2 py-0.5 rounded flex items-center gap-1">
-                    <i data-lucide="quote" class="w-3 h-3"></i> ${item.citationCount} citas
-                  </span>
-                ` : ''}
+          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+            <div class="space-y-2 flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 text-[10px] font-mono">
+                ${article.year ? `<span class="px-2 py-0.5 bg-[#182635] text-slate-300 rounded">${article.year}</span>` : ''}
+                ${article.isOpenAccess ? `<span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 rounded flex items-center gap-1"><i data-lucide="unlock" class="w-3 h-3"></i> Acceso Abierto</span>` : ''}
+                <span class="px-2 py-0.5 bg-[#060B10] text-slate-400 border border-[#182635] rounded uppercase">${article.language}</span>
+                ${article.citationCount > 0 ? `<span class="px-2 py-0.5 bg-[#32E6E2]/10 text-[#32E6E2] border border-[#32E6E2]/20 rounded"><i data-lucide="quote" class="w-2.5 h-2.5 inline mr-1"></i>${article.citationCount} citas</span>` : ''}
               </div>
-              <h4 class="font-bold text-white text-sm sm:text-base group-hover:text-[#32E6E2] transition-colors leading-snug break-words">
-                ${item.title}
+
+              <h4 onclick="viewArticleDetail(${idx}, 'search')" class="font-bold text-sm sm:text-base text-white hover:text-[#32E6E2] cursor-pointer transition-colors leading-snug line-clamp-2">
+                ${article.title}
               </h4>
-              <p class="text-xs text-slate-400 line-clamp-2 sm:line-clamp-1 break-words">
-                <strong>Autores:</strong> ${item.authors}
-              </p>
+
+              <p class="text-xs text-slate-400 line-clamp-1"><i data-lucide="users" class="w-3.5 h-3.5 inline mr-1 text-slate-500"></i>${article.authors}</p>
+              <p class="text-xs text-slate-500 italic line-clamp-1"><i data-lucide="book-open" class="w-3.5 h-3.5 inline mr-1"></i>${article.journal}</p>
             </div>
-            
-            <div class="flex items-center space-x-2 self-end sm:self-start flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-[#182635] w-full sm:w-auto justify-end">
-              <button 
-                onclick="toggleSaveArticle('${escapeJsQuotes(item.doi)}')"
-                title="Guardar en biblioteca"
-                class="p-2 sm:p-2.5 ${isSaved ? 'bg-[#32E6E2] text-[#060B10]' : 'bg-[#060B10] text-slate-400 hover:text-white'} rounded-lg border border-[#182635] text-xs transition-colors"
-              >
-                <i data-lucide="bookmark" class="w-4 h-4"></i>
+
+            <div class="flex sm:flex-col items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#182635] justify-end">
+              <button onclick="viewArticleDetail(${idx}, 'search')" class="px-3.5 py-1.5 bg-[#32E6E2]/10 hover:bg-[#32E6E2] text-[#32E6E2] hover:text-[#060B10] font-bold rounded-lg text-xs transition-all flex items-center gap-1.5 whitespace-nowrap">
+                <span>Ver Detalles</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
               </button>
-              <button 
-                onclick="inspectArticle('${escapeJsQuotes(item.doi)}')"
-                class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-colors shadow"
-              >
-                <span>Ficha Completa</span>
-                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              
+              <button onclick="toggleSaveArticle('${article.doi}', ${idx}, 'search')" class="p-1.5 ${isSaved ? 'text-[#32E6E2] bg-[#32E6E2]/20' : 'text-slate-400 hover:text-white bg-[#060B10]'} border border-[#182635] rounded-lg transition-all" title="${isSaved ? 'Quitar de la biblioteca' : 'Guardar en biblioteca'}">
+                <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'fill-[#32E6E2]' : ''}"></i>
               </button>
             </div>
           </div>
@@ -1166,403 +904,388 @@
       lucide.createIcons();
     }
 
-    async function inspectArticle(doi) {
-      const cleanDoiStr = cleanDoi(doi);
-      
-      // Asegura que se active la pestaña de buscador para visibilizar la ficha
-      switchTab('search');
+    function viewArticleDetail(idx, origin = 'search') {
+      detailOrigin = origin;
+      const article = origin === 'library' ? savedLibrary[idx] : currentArticleList[idx];
+      if (!article) return;
+      activeArticle = article;
 
+      originalAbstractText = article.abstract || '';
+      translatedAbstractText = '';
+      isAbstractTranslated = false;
+
+      const panelSearch = document.getElementById('panel-search');
+      const panelLibrary = document.getElementById('panel-library');
+      const panelBatch = document.getElementById('panel-batch');
       const resultsSection = document.getElementById('resultsSection');
-      const loadingState = document.getElementById('loadingState');
       const resultsList = document.getElementById('resultsList');
-      const articleDetailView = document.getElementById('articleDetailView');
-
-      resultsSection.classList.remove('hidden');
-      resultsList.classList.add('hidden');
-
-      // Buscar primero si el artículo ya existe en la biblioteca o resultados de búsqueda
-      const cachedArticle = savedLibrary.find(a => cleanDoi(a.doi) === cleanDoiStr) || 
-                            currentArticleList.find(a => cleanDoi(a.doi) === cleanDoiStr);
-
-      if (cachedArticle && cachedArticle.title && cachedArticle.apa) {
-        displaySingleArticle(cachedArticle, true);
-        return;
-      }
-
-      loadingState.classList.remove('hidden');
-
-      try {
-        const article = await fetchArticleFullDetails(cleanDoiStr);
-        loadingState.classList.add('hidden');
-        displaySingleArticle(article, true);
-      } catch (err) {
-        loadingState.classList.add('hidden');
-        resultsList.classList.remove('hidden');
-        showToast('Error al obtener datos completos del artículo.');
-      }
-    }
-
-    function displaySingleArticle(art, showBack = false) {
-      activeArticle = art;
       const detailView = document.getElementById('articleDetailView');
-      const resultsList = document.getElementById('resultsList');
       const loadMoreContainer = document.getElementById('loadMoreContainer');
+
+      if (panelSearch) panelSearch.classList.add('hidden');
+      if (panelLibrary) panelLibrary.classList.add('hidden');
+      if (panelBatch) panelBatch.classList.add('hidden');
+      if (resultsSection) resultsSection.classList.add('hidden');
+      if (resultsList) resultsList.classList.add('hidden');
       if (loadMoreContainer) loadMoreContainer.classList.add('hidden');
       
-      document.getElementById('resultsTitle').textContent = 'Detalle e Investigación Académica';
-      document.getElementById('resultsSubtitle').textContent = 'Metadatos validados, métricas de citación, resúmenes y citas multiformato';
-      document.getElementById('resultsBadge').innerHTML = '';
+      if (detailView) {
+        detailView.classList.remove('hidden');
+      }
 
-      resultsList.classList.add('hidden');
-      detailView.classList.remove('hidden');
+      const isSaved = savedLibrary.some(a => cleanDoi(a.doi) === cleanDoi(article.doi));
 
-      const isSaved = savedLibrary.some(s => s.doi === art.doi);
+      const apaCitation = `${article.authors} (${article.year}). ${article.title}. ${article.journal}. https://doi.org/${article.doi}`;
+      const bibtexCitation = `@article{${article.doi.replace(/[^a-zA-Z0-9]/g, '_')},\n  title={${article.title}},\n  author={${article.authors}},\n  journal={${article.journal}},\n  year={${article.year}},\n  doi={${article.doi}}\n}`;
 
-      detailView.innerHTML = `
-        <div class="bg-[#0b121c] border border-[#182635] rounded-2xl p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6 animate-fade-in shadow-xl">
-          
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#182635] pb-4">
-            <div class="flex flex-wrap items-center gap-2">
-              ${showBack ? `
-                <button onclick="backToList()" class="px-3 py-1.5 bg-[#060B10] hover:bg-[#101b2b] text-slate-300 rounded-lg border border-[#182635] text-xs font-semibold flex items-center space-x-1">
-                  <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-                  <span>Volver</span>
-                </button>
-              ` : ''}
-              
-              ${art.isOpenAccess ? `
-                <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800/60">
-                  <i data-lucide="unlock" class="w-3.5 h-3.5"></i>
-                  <span>Acceso Abierto (PDF)</span>
-                </span>
-              ` : `
-                <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#060B10] text-slate-400 border border-[#182635]">
-                  <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-                  <span>Suscripción / Editorial</span>
-                </span>
-              `}
-            </div>
+      const backBtnText = origin === 'library' ? 'Volver a la Biblioteca' : 'Volver a la Lista';
 
-            <div class="flex items-center space-x-2 self-end sm:self-auto">
-              <button onclick="toggleSaveArticle('${art.doi}')" class="px-3.5 py-1.5 ${isSaved ? 'bg-[#32E6E2] text-[#060B10]' : 'bg-[#060B10] text-slate-300'} rounded-lg border border-[#182635] text-xs font-bold flex items-center space-x-1.5">
-                <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
-                <span>${isSaved ? 'Guardado' : 'Guardar'}</span>
+      if (detailView) {
+        detailView.innerHTML = `
+          <div class="bg-[#0b121c] border border-[#182635] rounded-2xl p-4 sm:p-6 space-y-6 animate-fade-in">
+            
+            <div class="flex items-center justify-between border-b border-[#182635] pb-4">
+              <button onclick="backToList()" class="px-3 py-1.5 bg-[#060B10] hover:bg-[#182635] border border-[#182635] text-slate-300 hover:text-[#32E6E2] text-xs font-bold rounded-lg flex items-center space-x-1.5 transition-colors">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>${backBtnText}</span>
               </button>
-            </div>
-          </div>
 
-          <div class="space-y-3">
-            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight break-words">${art.title}</h2>
-            <div class="text-xs sm:text-sm text-slate-300 space-y-1.5">
-              <p><strong class="text-slate-400">Revista:</strong> <span class="italic text-[#32E6E2]">${art.journal}</span> (${art.year})</p>
-              <p><strong class="text-slate-400">Autores:</strong> <span class="break-words">${art.authors}</span></p>
-              <p><strong class="text-slate-400">DOI Identificador:</strong> <span class="font-mono text-xs text-[#32E6E2] break-all">${art.doi}</span></p>
-            </div>
-          </div>
-
-          ${art.tldr || art.abstract || art.spanishAbstract ? `
-            <div class="bg-[#060B10] border border-[#182635] rounded-xl p-3.5 sm:p-4 space-y-3">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#182635] pb-2">
-                <h4 class="text-xs font-bold text-[#32E6E2] uppercase tracking-wider flex items-center gap-1.5">
-                  <i data-lucide="sparkles" class="w-4 h-4"></i> Resumen / Abstract
-                </h4>
-                
-                ${art.isSpanishAvailable ? `
-                  <span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 text-[10px] sm:text-[11px] rounded-md font-semibold flex items-center gap-1 self-start sm:self-auto">
-                    <i data-lucide="check-circle" class="w-3 h-3"></i> Disponible en Español
-                  </span>
-                ` : `
-                  <button id="translateBtn" onclick="translateAbstract('${art.doi}')" class="px-2.5 py-1 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded text-xs flex items-center gap-1.5 transition-colors self-start sm:self-auto">
-                    <i data-lucide="languages" class="w-3.5 h-3.5"></i>
-                    <span>Traducir a Español con IA</span>
-                  </button>
-                `}
-              </div>
-
-              ${art.tldr ? `<p class="text-xs font-medium text-amber-200/90 italic break-words"><strong>TL;DR:</strong> ${art.tldr}</p>` : ''}
-              
-              ${art.isSpanishAvailable && art.spanishAbstract !== art.abstract ? `
-                <div class="flex items-center space-x-1.5 text-[11px] font-medium border-b border-[#060B10] pb-1">
-                  <button onclick="switchAbstractLang('${art.doi}', 'es')" id="btn-abs-es" class="px-2.5 py-1 rounded bg-[#32E6E2] text-[#060B10] font-bold">Español</button>
-                  <button onclick="switchAbstractLang('${art.doi}', 'orig')" id="btn-abs-orig" class="px-2.5 py-1 rounded bg-[#0b121c] text-slate-400 border border-[#182635]">Original / Inglés</button>
-                </div>
-              ` : ''}
-
-              <div id="abstractTextContainer">
-                <p class="text-xs text-slate-300 leading-relaxed max-h-52 sm:max-h-60 overflow-y-auto custom-scrollbar break-words">
-                  ${(art.isSpanishAvailable ? art.spanishAbstract : art.abstract).replace(/<[^>]*>?/gm, '')}
-                </p>
-              </div>
-            </div>
-          ` : ''}
-
-          <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
-            ${art.pdfUrl ? `
-              <a href="${art.pdfUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 px-4 py-3 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] rounded-xl text-xs font-extrabold flex items-center justify-center space-x-2 shadow-lg shadow-[#32E6E2]/20 active:scale-98">
-                <i data-lucide="file-down" class="w-4 h-4"></i>
-                <span>Descargar PDF Gratis</span>
-              </a>
-            ` : ''}
-
-            <a href="${art.publisherUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 px-4 py-3 bg-[#060B10] hover:bg-[#101b2b] text-slate-200 border border-[#182635] rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 active:scale-98">
-              <i data-lucide="external-link" class="w-4 h-4"></i>
-              <span>Ver en Editorial / Publisher</span>
-            </a>
-          </div>
-
-          <div class="bg-[#060B10] border border-[#182635] rounded-xl p-4 sm:p-5 space-y-3.5">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#182635] pb-3">
-              <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
-                <i data-lucide="quote" class="w-4 h-4 text-[#32E6E2]"></i>
-                <span>Generador de Citas & Exportación</span>
-              </h3>
-              
-              <div class="flex items-center space-x-2 self-end sm:self-auto">
-                <button onclick="downloadSingleFile('${art.doi}', 'bib')" class="px-2.5 py-1 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded text-xs flex items-center gap-1">
-                  <i data-lucide="download" class="w-3 h-3"></i> .BIB
-                </button>
-                <button onclick="downloadSingleFile('${art.doi}', 'ris')" class="px-2.5 py-1 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded text-xs flex items-center gap-1">
-                  <i data-lucide="download" class="w-3 h-3"></i> .RIS
-                </button>
-              </div>
+              <button onclick="toggleSaveArticle('${article.doi}', ${idx}, '${origin}')" class="px-3.5 py-1.5 ${isSaved ? 'bg-[#32E6E2] text-[#060B10]' : 'bg-[#060B10] text-slate-300 hover:text-white'} border border-[#182635] text-xs font-bold rounded-lg flex items-center space-x-1.5 transition-colors">
+                <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'fill-[#060B10]' : ''}"></i>
+                <span>${isSaved ? 'En Biblioteca' : 'Guardar Artículo'}</span>
+              </button>
             </div>
 
             <div class="space-y-3">
-              <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 text-xs">
-                <button onclick="setCitationStyle('apa', '${art.doi}')" id="cite-btn-apa" class="px-3 py-1 rounded bg-[#32E6E2] text-[#060B10] font-bold whitespace-nowrap">APA 7</button>
-                <button onclick="setCitationStyle('mla', '${art.doi}')" id="cite-btn-mla" class="px-3 py-1 rounded bg-[#0b121c] text-slate-400 border border-[#182635] whitespace-nowrap">MLA 9</button>
-                <button onclick="setCitationStyle('ieee', '${art.doi}')" id="cite-btn-ieee" class="px-3 py-1 rounded bg-[#0b121c] text-slate-400 border border-[#182635] whitespace-nowrap">IEEE</button>
-                <button onclick="setCitationStyle('chicago', '${art.doi}')" id="cite-btn-chicago" class="px-3 py-1 rounded bg-[#0b121c] text-slate-400 border border-[#182635] whitespace-nowrap">Chicago 17</button>
-                <button onclick="setCitationStyle('bibtex', '${art.doi}')" id="cite-btn-bibtex" class="px-3 py-1 rounded bg-[#0b121c] text-slate-400 border border-[#182635] whitespace-nowrap">BibTeX</button>
+              <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
+                <span class="px-2.5 py-1 bg-[#182635] text-[#32E6E2] rounded-md font-bold">${article.year}</span>
+                <span class="px-2.5 py-1 bg-[#060B10] text-slate-300 border border-[#182635] rounded-md">${article.journal}</span>
+                <span class="px-2.5 py-1 bg-[#060B10] text-slate-400 border border-[#182635] rounded-md uppercase">Idioma: ${article.language}</span>
+                ${article.pdfUrl ? `<a href="${article.pdfUrl}" target="_blank" class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-md font-bold flex items-center gap-1 hover:bg-emerald-500/30"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> PDF Disponible</a>` : ''}
               </div>
 
-              <div class="relative bg-[#0b121c] p-3 sm:p-3.5 rounded-lg border border-[#182635]">
-                <div id="citationBoxText" class="text-xs text-slate-200 font-serif leading-relaxed select-all pr-10 break-words overflow-x-auto">${art.apa}</div>
-                <button onclick="copyCurrentCitation()" class="absolute right-2 top-2 p-1.5 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded shadow" title="Copiar cita">
-                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                </button>
+              <h2 class="text-lg sm:text-2xl font-extrabold text-white leading-snug">${article.title}</h2>
+              <p class="text-xs sm:text-sm text-slate-300 font-medium"><i data-lucide="users" class="w-4 h-4 inline mr-1 text-[#32E6E2]"></i> Autores: ${article.authors}</p>
+              <p class="text-xs text-slate-400 font-mono">DOI: <a href="https://doi.org/${article.doi}" target="_blank" class="text-[#32E6E2] hover:underline">${article.doi}</a></p>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <i data-lucide="quote" class="w-4 h-4 text-[#32E6E2]"></i> Citar este artículo
+                </h4>
+                <div class="flex items-center space-x-2">
+                  <button onclick="downloadSingleCitation('bibtex')" class="px-3 py-1.5 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-extrabold text-xs rounded-lg flex items-center space-x-1 transition-all shadow-sm">
+                    <i data-lucide="file-code" class="w-3.5 h-3.5"></i>
+                    <span>Exportar .BIB</span>
+                  </button>
+                  <button onclick="downloadSingleCitation('ris')" class="px-3 py-1.5 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-extrabold text-xs rounded-lg flex items-center space-x-1 transition-all shadow-sm">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>Exportar .RIS</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="bg-[#060B10] border border-[#182635] rounded-xl p-3 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-300">Formato APA 7</span>
+                    <button onclick="copyToClipboard(\`${apaCitation}\`)" class="text-[11px] text-[#32E6E2] hover:underline flex items-center gap-1">
+                      <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+                    </button>
+                  </div>
+                  <p class="text-xs text-slate-400 font-serif leading-relaxed select-all">${apaCitation}</p>
+                </div>
+
+                <div class="bg-[#060B10] border border-[#182635] rounded-xl p-3 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-300">Formato BibTeX</span>
+                    <button onclick="copyToClipboard(\`${bibtexCitation.replace(/`/g, '\\`')}\`)" class="text-[11px] text-[#32E6E2] hover:underline flex items-center gap-1">
+                      <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+                    </button>
+                  </div>
+                  <pre class="text-[11px] text-slate-400 font-mono whitespace-pre-wrap overflow-x-auto select-all">${bibtexCitation}</pre>
+                </div>
               </div>
             </div>
 
           </div>
-
-        </div>
-      `;
+        `;
+      }
 
       lucide.createIcons();
     }
 
-    function switchAbstractLang(doi, lang) {
-      const art = (activeArticle && activeArticle.doi === doi) 
-        ? activeArticle 
-        : (currentArticleList.find(a => a.doi === doi) || savedLibrary.find(a => a.doi === doi));
-      if (!art) return;
+    async function translateTextToTarget(text, targetLang = 'es') {
+      if (!text || !text.trim()) return '';
 
-      const btnEs = document.getElementById('btn-abs-es');
-      const btnOrig = document.getElementById('btn-abs-orig');
-      const container = document.getElementById('abstractTextContainer');
+      const cleanText = cleanAbstractText(text);
+      if (!cleanText || cleanText.length < 3) return '';
 
-      if (lang === 'es') {
-        if (btnEs) btnEs.className = "px-2.5 py-1 rounded bg-[#32E6E2] text-[#060B10] font-bold";
-        if (btnOrig) btnOrig.className = "px-2.5 py-1 rounded bg-[#0b121c] text-slate-400 border border-[#182635]";
-        if (container) container.innerHTML = `<p class="text-xs text-slate-300 leading-relaxed max-h-52 sm:max-h-60 overflow-y-auto custom-scrollbar break-words">${art.spanishAbstract.replace(/<[^>]*>?/gm, '')}</p>`;
-      } else {
-        if (btnEs) btnEs.className = "px-2.5 py-1 rounded bg-[#0b121c] text-slate-400 border border-[#182635]";
-        if (btnOrig) btnOrig.className = "px-2.5 py-1 rounded bg-[#32E6E2] text-[#060B10] font-bold";
-        if (container) container.innerHTML = `<p class="text-xs text-slate-300 leading-relaxed max-h-52 sm:max-h-60 overflow-y-auto custom-scrollbar break-words">${art.abstract.replace(/<[^>]*>?/gm, '')}</p>`;
-      }
-    }
-
-    async function translateAbstract(doi) {
-      const art = (activeArticle && activeArticle.doi === doi) 
-        ? activeArticle 
-        : (currentArticleList.find(a => a.doi === doi) || savedLibrary.find(a => a.doi === doi));
-        
-      if (!art || !art.abstract) {
-        showToast('No hay resumen disponible para traducir.');
-        return;
-      }
-
-      const btn = document.getElementById('translateBtn');
-      const container = document.getElementById('abstractTextContainer');
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Traduciendo...`;
-        lucide.createIcons();
+      try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(cleanText)}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data[0] && Array.isArray(data[0])) {
+            const translatedText = data[0].map(item => item[0]).filter(Boolean).join('');
+            if (translatedText && translatedText.trim()) {
+              return translatedText.trim();
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Google Translate GTX failed, fallback to alternative API:', e);
       }
 
       try {
-        const cleanText = art.abstract.replace(/<[^>]*>?/gm, '').trim();
-        let translatedText = '';
-
-        try {
-          const gtxUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=es&dt=t&q=${encodeURIComponent(cleanText)}`;
-          const response = await fetch(gtxUrl);
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data[0]) {
-              translatedText = data[0].map(item => item[0]).filter(Boolean).join(' ');
-            }
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(cleanText)}&langpair=auto|${targetLang}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          const trans = data?.responseData?.translatedText;
+          if (trans && !trans.includes('QUERY LENGTH LIMIT') && !trans.includes('MYMEMORY WARNING')) {
+            return trans.trim();
           }
-        } catch (err) {
-          console.warn('Error en motor principal de traducción, intentando respaldo...', err);
-        }
-
-        if (!translatedText) {
-          const chunk = cleanText.substring(0, 500);
-          const mmUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=en|es`;
-          const response = await fetch(mmUrl);
-          if (response.ok) {
-            const data = await response.json();
-            translatedText = data?.responseData?.translatedText || '';
-          }
-        }
-
-        if (translatedText) {
-          art.spanishAbstract = translatedText;
-          art.isSpanishAvailable = true;
-          if (container) {
-            container.innerHTML = `
-              <p class="text-xs text-slate-300 leading-relaxed max-h-52 sm:max-h-60 overflow-y-auto custom-scrollbar break-words">${translatedText}</p>
-              <div class="mt-2 text-[11px] text-emerald-400 flex items-center gap-1 font-medium">
-                <i data-lucide="sparkles" class="w-3 h-3"></i> Resumen traducido al español exitosamente
-              </div>
-            `;
-            lucide.createIcons();
-          }
-          if (btn) btn.classList.add('hidden');
-          showToast('¡Resumen traducido al español!');
-        } else {
-          throw new Error('No se pudo procesar la traducción');
         }
       } catch (e) {
-        showToast('No se pudo traducir el resumen.');
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = `<i data-lucide="languages" class="w-3.5 h-3.5"></i> Reintentar Traducción`;
-          lucide.createIcons();
+        console.warn('MyMemory translation failed:', e);
+      }
+
+      return cleanText;
+    }
+
+    async function toggleAbstractTranslation() {
+      const btnLabel = document.getElementById('translateBtnLabel');
+      const abstractContent = document.getElementById('abstractContent');
+      const translateBtn = document.getElementById('translateBtn');
+      if (!abstractContent || !activeArticle) return;
+
+      const isArticleInSpanish = activeArticle.language === 'es' || isSpanishText(activeArticle.abstract) || isSpanishText(originalAbstractText);
+      const targetLang = isArticleInSpanish ? 'en' : 'es';
+      const defaultToggleLabel = isArticleInSpanish ? 'Traducir al Inglés' : 'Traducir al Español';
+
+      if (isAbstractTranslated) {
+        abstractContent.innerText = originalAbstractText;
+        btnLabel.innerText = defaultToggleLabel;
+        isAbstractTranslated = false;
+        return;
+      }
+
+      if (translatedAbstractText) {
+        abstractContent.innerText = translatedAbstractText;
+        btnLabel.innerText = 'Ver Original';
+        isAbstractTranslated = true;
+        return;
+      }
+
+      btnLabel.innerText = 'Traduciendo...';
+      if (translateBtn) translateBtn.disabled = true;
+
+      try {
+        const translated = await translateTextToTarget(originalAbstractText, targetLang);
+        if (translated && translated.trim() && translated !== originalAbstractText) {
+          translatedAbstractText = translated;
+          abstractContent.innerText = translatedAbstractText;
+          btnLabel.innerText = 'Ver Original';
+          isAbstractTranslated = true;
+          showToast('Resumen traducido con éxito');
+        } else {
+          showToast('El texto no requirió traducción o no pudo procesarse');
+          btnLabel.innerText = defaultToggleLabel;
         }
+      } catch (err) {
+        console.warn('Translation error:', err);
+        showToast('No se pudo traducir automáticamente en este momento');
+        btnLabel.innerText = defaultToggleLabel;
+      } finally {
+        if (translateBtn) translateBtn.disabled = false;
       }
     }
 
-    function setCitationStyle(style, doi) {
-      const art = (activeArticle && activeArticle.doi === doi) 
-        ? activeArticle 
-        : (currentArticleList.find(a => a.doi === doi) || savedLibrary.find(a => a.doi === doi));
-      if (!art) return;
+    function downloadSingleCitation(format) {
+      if (!activeArticle) return;
+      const a = activeArticle;
+      let content = '';
+      let filename = `cita_${(a.doi || 'articulo').replace(/[^a-zA-Z0-9]/g, '_')}`;
 
-      ['apa', 'mla', 'ieee', 'chicago', 'bibtex'].forEach(s => {
-        const btn = document.getElementById(`cite-btn-${s}`);
-        if (btn) btn.className = s === style ? "px-3 py-1 rounded bg-[#32E6E2] text-[#060B10] font-bold whitespace-nowrap" : "px-3 py-1 rounded bg-[#0b121c] text-slate-400 border border-[#182635] whitespace-nowrap";
-      });
-
-      const box = document.getElementById('citationBoxText');
-      if (style === 'bibtex') {
-        box.innerHTML = `<pre class="font-mono text-[11px] leading-normal whitespace-pre-wrap break-all">${art.bibtex}</pre>`;
-      } else {
-        box.textContent = art[style];
+      if (format === 'bibtex') {
+        filename += '.bib';
+        content = `@article{${a.doi.replace(/[^a-zA-Z0-9]/g, '_')},\n  title={${a.title}},\n  author={${a.authors}},\n  journal={${a.journal}},\n  year={${a.year}},\n  doi={${a.doi}}\n}`;
+      } else if (format === 'ris') {
+        filename += '.ris';
+        content = `TY  - JOUR\nTI  - ${a.title}\nAU  - ${a.authors}\nJO  - ${a.journal}\nPY  - ${a.year}\nDO  - ${a.doi}\nER  - `;
       }
-    }
 
-    function copyCurrentCitation() {
-      const box = document.getElementById('citationBoxText');
-      const text = box.innerText || box.textContent;
-      copyToClipboard(text, 'Cita');
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      showToast(`Cita exportada en formato .${format.toUpperCase()}`);
     }
 
     function backToList() {
-      document.getElementById('articleDetailView').classList.add('hidden');
-      if (currentArticleList && currentArticleList.length > 0) {
-        document.getElementById('resultsList').classList.remove('hidden');
-        if (currentArticleList.length < totalSearchResultsCount) {
-          document.getElementById('loadMoreContainer')?.classList.remove('hidden');
-        }
-      } else {
+      const detailView = document.getElementById('articleDetailView');
+      if (detailView) detailView.classList.add('hidden');
+
+      if (detailOrigin === 'library') {
         switchTab('library');
+      } else {
+        const panelSearch = document.getElementById('panel-search');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsList = document.getElementById('resultsList');
+        if (panelSearch) panelSearch.classList.remove('hidden');
+        if (resultsSection) resultsSection.classList.remove('hidden');
+        if (resultsList) resultsList.classList.remove('hidden');
+        if (currentArticleList.length < totalSearchResultsCount) {
+          const loadMoreContainer = document.getElementById('loadMoreContainer');
+          if (loadMoreContainer) loadMoreContainer.classList.remove('hidden');
+        }
       }
     }
 
-    function toggleSaveArticle(doi) {
-      const art = (activeArticle && activeArticle.doi === doi) 
-        ? activeArticle 
-        : (currentArticleList.find(a => a.doi === doi) || savedLibrary.find(a => a.doi === doi));
-      if (!art) return;
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-[#32E6E2]', 'text-[#060B10]', 'font-bold');
+        btn.classList.add('text-slate-400');
+      });
 
-      const index = savedLibrary.findIndex(s => s.doi === doi);
-      if (index >= 0) {
-        savedLibrary.splice(index, 1);
-        showToast('Artículo eliminado de la biblioteca');
-      } else {
-        savedLibrary.push(art);
-        showToast('Artículo guardado en la biblioteca');
+      const activeTab = document.getElementById(`tab-${tabName}`);
+      if (activeTab) {
+        activeTab.classList.add('bg-[#32E6E2]', 'text-[#060B10]', 'font-bold');
+        activeTab.classList.remove('text-slate-400');
       }
-      localStorage.setItem('scholar_library', JSON.stringify(savedLibrary));
-      updateLibraryBadge();
-      
-      if (!document.getElementById('panel-library').classList.contains('hidden')) {
+
+      const panelSearch = document.getElementById('panel-search');
+      const panelLibrary = document.getElementById('panel-library');
+      const panelBatch = document.getElementById('panel-batch');
+      const resultsSection = document.getElementById('resultsSection');
+      const resultsList = document.getElementById('resultsList');
+      const articleDetailView = document.getElementById('articleDetailView');
+
+      if (panelSearch) panelSearch.classList.add('hidden');
+      if (panelLibrary) panelLibrary.classList.add('hidden');
+      if (panelBatch) panelBatch.classList.add('hidden');
+      if (resultsSection) resultsSection.classList.add('hidden');
+      if (resultsList) resultsList.classList.add('hidden');
+      if (articleDetailView) articleDetailView.classList.add('hidden');
+
+      const targetPanel = document.getElementById(`panel-${tabName}`);
+      if (targetPanel) {
+        targetPanel.classList.remove('hidden');
+      }
+
+      if (tabName === 'library') {
         renderLibrary();
-      } else if (activeArticle && activeArticle.doi === doi) {
-        displaySingleArticle(activeArticle, true);
-      } else if (currentArticleList.length > 0) {
-        displayMultipleResults(currentArticleList, document.getElementById('searchInput').value, totalSearchResultsCount);
-      }
-    }
-
-    function updateLibraryBadge() {
-      const badge = document.getElementById('savedCountBadge');
-      if (!badge) return;
-      if (savedLibrary.length > 0) {
-        badge.textContent = savedLibrary.length;
-        badge.classList.remove('hidden');
-      } else {
-        badge.classList.add('hidden');
+      } else if (tabName === 'search') {
+        if (panelSearch) panelSearch.classList.remove('hidden');
+        if (currentArticleList.length > 0) {
+          if (resultsSection) resultsSection.classList.remove('hidden');
+          if (resultsList) resultsList.classList.remove('hidden');
+        }
       }
     }
 
     function renderLibrary() {
       const container = document.getElementById('libraryContainer');
       if (!container) return;
+      container.innerHTML = '';
 
       if (savedLibrary.length === 0) {
         container.innerHTML = `
-          <div class="bg-[#0b121c] border border-[#182635] rounded-xl p-8 text-center text-slate-400 space-y-2">
-            <i data-lucide="bookmark-x" class="w-8 h-8 mx-auto text-slate-500"></i>
-            <p class="font-medium text-sm">No tienes artículos guardados en tu biblioteca.</p>
-            <p class="text-xs text-slate-500">Guarda artículos desde los resultados de búsqueda para consultarlos luego.</p>
+          <div class="bg-[#0b121c] border border-[#182635] rounded-2xl p-8 text-center space-y-3">
+            <i data-lucide="bookmark" class="w-10 h-10 text-slate-600 mx-auto"></i>
+            <h3 class="font-bold text-slate-300 text-sm">Tu biblioteca está vacía</h3>
+            <p class="text-xs text-slate-500">Guarda publicaciones desde la pestaña del buscador para acceder a ellas rápidamente.</p>
+            <button onclick="switchTab('search')" class="mt-2 px-4 py-2 bg-[#32E6E2] text-[#060B10] font-bold rounded-xl text-xs inline-flex items-center space-x-1.5">
+              <i data-lucide="search" class="w-4 h-4"></i>
+              <span>Ir al Buscador</span>
+            </button>
           </div>
         `;
         lucide.createIcons();
         return;
       }
 
-      container.innerHTML = '';
-      savedLibrary.forEach((art) => {
+      savedLibrary.forEach((article, idx) => {
         const card = document.createElement('div');
-        card.className = "bg-[#0b121c] border border-[#182635] rounded-xl p-4 transition-all hover:border-[#32E6E2]/40";
+        card.className = 'bg-[#0b121c] border border-[#182635] rounded-xl p-4 space-y-3';
         card.innerHTML = `
-          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-            <div class="space-y-1.5 flex-1 min-w-0">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="px-2 py-0.5 bg-[#060B10] text-[#32E6E2] border border-[#182635] rounded text-[10px] font-mono">${art.doi}</span>
-                <span class="text-xs text-slate-400">${art.year} • <span class="italic text-slate-300">${art.journal}</span></span>
-              </div>
-              <h4 class="font-bold text-white text-sm sm:text-base leading-snug break-words">${art.title}</h4>
-              <p class="text-xs text-slate-400 line-clamp-1"><strong>Autores:</strong> ${art.authors}</p>
+          <div class="flex items-start justify-between gap-3">
+            <div class="space-y-1 flex-1 min-w-0">
+              <span class="text-[10px] font-mono px-2 py-0.5 bg-[#182635] text-[#32E6E2] rounded">${article.year || 'S/F'}</span>
+              <h4 onclick="viewArticleDetail(${idx}, 'library')" class="font-bold text-sm text-white hover:text-[#32E6E2] cursor-pointer transition-colors mt-1">${article.title || 'Sin Título'}</h4>
+              <p class="text-xs text-slate-400">${article.authors || 'Autor Desconocido'}</p>
+              <p class="text-xs text-slate-500 italic">${article.journal || 'Publicación no especificada'}</p>
             </div>
-            <div class="flex items-center space-x-2 self-end sm:self-start flex-shrink-0">
-              <button onclick="toggleSaveArticle('${escapeJsQuotes(art.doi)}')" class="p-2 bg-red-950/40 text-red-400 hover:bg-red-900/40 border border-red-800/60 rounded-lg text-xs" title="Eliminar">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <div class="flex items-center space-x-2 flex-shrink-0">
+              <button onclick="viewArticleDetail(${idx}, 'library')" class="px-3 py-1.5 bg-[#32E6E2]/10 hover:bg-[#32E6E2] text-[#32E6E2] hover:text-[#060B10] text-xs font-bold rounded-lg transition-all flex items-center space-x-1">
+                <span>Ver</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="inspectArticle('${escapeJsQuotes(art.doi)}')" class="px-3 py-2 bg-[#32E6E2] text-[#060B10] font-bold rounded-lg text-xs flex items-center space-x-1">
-                <span>Ficha</span>
-                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              <button onclick="toggleSaveArticle('${article.doi}', ${idx}, 'library')" class="p-1.5 text-red-400 hover:bg-red-950/40 border border-red-800/40 rounded-lg" title="Eliminar">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
             </div>
           </div>
         `;
         container.appendChild(card);
       });
+
       lucide.createIcons();
+    }
+
+    function updateLibraryBadge() {
+      const badge = document.getElementById('savedCountBadge');
+      if (badge) {
+        if (savedLibrary.length > 0) {
+          badge.innerText = savedLibrary.length;
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
+      }
+    }
+
+    function toggleSaveArticle(doi, listIdx = null, origin = 'search') {
+      const cleanD = cleanDoi(doi);
+      const existingIdx = savedLibrary.findIndex(a => cleanDoi(a.doi) === cleanD);
+
+      if (existingIdx >= 0) {
+        savedLibrary.splice(existingIdx, 1);
+        showToast('Artículo eliminado de la biblioteca');
+      } else {
+        let articleToAdd = null;
+        if (origin === 'library' && listIdx !== null && savedLibrary[listIdx]) {
+          articleToAdd = savedLibrary[listIdx];
+        } else if (activeArticle && cleanDoi(activeArticle.doi) === cleanD) {
+          articleToAdd = activeArticle;
+        } else if (listIdx !== null && currentArticleList[listIdx]) {
+          articleToAdd = currentArticleList[listIdx];
+        } else {
+          articleToAdd = currentArticleList.find(a => cleanDoi(a.doi) === cleanD) || savedLibrary.find(a => cleanDoi(a.doi) === cleanD);
+        }
+
+        if (articleToAdd) {
+          savedLibrary.push(articleToAdd);
+          showToast('Artículo guardado en la biblioteca');
+        }
+      }
+
+      localStorage.setItem('scholar_library', JSON.stringify(savedLibrary));
+      updateLibraryBadge();
+
+      if (!document.getElementById('panel-library').classList.contains('hidden')) {
+        renderLibrary();
+      } else if (activeArticle && cleanDoi(activeArticle.doi) === cleanD && !document.getElementById('articleDetailView').classList.contains('hidden')) {
+        const currentIdx = origin === 'library' ? savedLibrary.findIndex(a => cleanDoi(a.doi) === cleanD) : currentArticleList.findIndex(a => cleanDoi(a.doi) === cleanD);
+        if (currentIdx >= 0) {
+          viewArticleDetail(currentIdx, detailOrigin);
+        }
+      } else if (!document.getElementById('resultsList').classList.contains('hidden')) {
+        renderSearchResults();
+      }
     }
 
     function clearLibrary() {
@@ -1574,120 +1297,185 @@
       showToast('Biblioteca vaciada');
     }
 
-    function downloadSingleFile(doi, type) {
-      const art = (activeArticle && activeArticle.doi === doi) 
-        ? activeArticle 
-        : (currentArticleList.find(a => a.doi === doi) || savedLibrary.find(a => a.doi === doi));
-      if (!art) return;
-
-      const content = type === 'bib' ? art.bibtex : art.ris;
-      const filename = `${art.doi.replace(/[^a-zA-Z0-9]/g, '_')}.${type}`;
-      downloadBlob(content, filename, 'text/plain');
-    }
-
-    function exportLibrary(type) {
+    function exportLibrary() {
       if (savedLibrary.length === 0) {
-        showToast('No hay artículos guardados para exportar');
+        showToast('La biblioteca está vacía');
         return;
       }
+      const filename = `fichas_biblioteca_${new Date().toISOString().slice(0,10)}.txt`;
+      const mimeType = 'text/plain;charset=utf-8';
 
-      const content = savedLibrary.map(a => type === 'bibtex' ? a.bibtex : a.ris).join('\n\n');
-      const filename = `mi_biblioteca_scholar.${type === 'bibtex' ? 'bib' : 'ris'}`;
-      downloadBlob(content, filename, 'text/plain');
-    }
+      const content = savedLibrary.map(a => {
+        const title = a.title || 'Sin Título';
+        const authors = a.authors || 'Autor Desconocido';
+        const journal = a.journal || 'Publicación no especificada';
+        const doi = a.doi ? `DOI: ${a.doi}` : '';
+        return `${title}\n${authors}\n${journal}\n${doi}`.trim();
+      }).join('\n\n');
 
-    function downloadBlob(content, filename, contentType) {
-      const blob = new Blob([content], { type: contentType });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const blob = new Blob([content], { type: mimeType });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      showToast('Fichas exportadas en formato .TXT');
     }
 
     async function processBatch() {
-      const text = document.getElementById('batchInput').value;
-      const doiMatches = text.match(/10\.\d{4,9}\/[-._;()/:A-Za-z0-9]+/gi) || [];
-      const uniqueDois = [...new Set(doiMatches.map(cleanDoi))];
+      const input = document.getElementById('batchInput').value;
+      if (!input.trim()) {
+        showToast('Por favor, ingresa texto o DOIs para extraer');
+        return;
+      }
+
+      const doiRegex = /10\.\d{4,9}\/[-._;()/:A-Za-z0-9]+/g;
+      const matches = [...new Set(input.match(doiRegex) || [])].map(cleanDoi);
+
+      if (matches.length === 0) {
+        showToast('No se encontraron DOIs válidos en el texto');
+        return;
+      }
 
       const batchResults = document.getElementById('batchResults');
       batchResults.classList.remove('hidden');
+      batchResults.innerHTML = `
+        <div class="bg-[#0b121c] border border-[#182635] rounded-xl p-4 text-xs text-[#32E6E2] font-mono flex items-center space-x-2">
+          <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+          <span>Procesando ${matches.length} DOIs encontrados...</span>
+        </div>
+      `;
+      lucide.createIcons();
 
-      if (uniqueDois.length === 0) {
+      const fetchedArticles = [];
+      for (const doi of matches) {
+        try {
+          const article = await fetchArticleFullDetails(doi);
+          fetchedArticles.push(article);
+        } catch (e) {
+          console.warn(`Error al obtener DOI ${doi}:`, e);
+        }
+      }
+
+      if (fetchedArticles.length === 0) {
         batchResults.innerHTML = `
-          <div class="p-3.5 bg-red-950/40 border border-red-800 text-red-300 rounded-xl text-xs font-semibold">
-            No se detectaron identificadores DOI válidos en el texto.
+          <div class="bg-red-950/40 border border-red-800/60 rounded-xl p-4 text-xs text-red-300">
+            No se pudieron obtener metadatos para los DOIs detectados.
           </div>
         `;
         return;
       }
 
-      batchResults.innerHTML = `
-        <div class="text-xs font-bold text-slate-300">
-          Se detectaron ${uniqueDois.length} DOIs. Procesando metadatos...
-        </div>
-        <div id="batchContainer" class="space-y-2.5"></div>
-      `;
+      currentArticleList = fetchedArticles;
+      totalSearchResultsCount = fetchedArticles.length;
+      switchTab('search');
+      renderSearchResults();
+      showToast(`Se cargaron ${fetchedArticles.length} artículos por lote`);
+    }
 
-      const container = document.getElementById('batchContainer');
+    function setSearchMode(mode) {
+      currentSearchMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('bg-[#32E6E2]', 'text-[#060B10]', 'font-bold', 'border-[#32E6E2]');
+        btn.classList.add('bg-[#060B10]', 'text-slate-400', 'border-[#182635]');
+      });
 
-      for (const doi of uniqueDois) {
-        const itemEl = document.createElement('div');
-        itemEl.className = "bg-[#0b121c] border border-[#182635] p-3 rounded-xl text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2";
-        itemEl.innerHTML = `<span class="font-mono text-slate-400 break-all">Procesando: ${doi}...</span>`;
-        container.appendChild(itemEl);
+      const activeBtn = document.getElementById(`mode-${mode}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-[#32E6E2]', 'text-[#060B10]', 'font-bold', 'border-[#32E6E2]');
+        activeBtn.classList.remove('bg-[#060B10]', 'text-slate-400', 'border-[#182635]');
+      }
+    }
 
-        try {
-          const art = await fetchArticleFullDetails(doi);
-          itemEl.innerHTML = `
-            <div class="min-w-0 flex-1">
-              <span class="font-bold text-white block break-words">${art.title}</span>
-              <p class="text-[11px] text-slate-400 break-words">${art.authors} (${art.year}) • <span class="font-mono break-all">${art.doi}</span></p>
-            </div>
-            <button onclick="inspectArticle('${art.doi}'); switchTab('search');" class="px-3 py-1 bg-[#32E6E2] text-[#060B10] font-bold rounded text-[11px] self-end sm:self-auto flex-shrink-0">Ver Ficha</button>
-          `;
-        } catch (e) {
-          itemEl.innerHTML = `<span class="text-red-400 font-mono break-all">Error al obtener DOI ${doi}</span>`;
+    function toggleFilters() {
+      const filters = document.getElementById('advancedFilters');
+      const chevron = document.getElementById('filterChevron');
+      filters.classList.toggle('hidden');
+      chevron.classList.toggle('rotate-180');
+    }
+
+    function quickSearch(term) {
+      switchTab('search');
+      document.getElementById('searchInput').value = term;
+      handleSearch();
+    }
+
+    function openLanguageModal() {
+      const modal = document.getElementById('languageModal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        document.getElementById('languageModalCard').classList.remove('scale-95');
+      }, 10);
+    }
+
+    function closeLanguageModal() {
+      const modal = document.getElementById('languageModal');
+      modal.classList.add('opacity-0');
+      document.getElementById('languageModalCard').classList.add('scale-95');
+      setTimeout(() => modal.classList.add('hidden'), 200);
+    }
+
+    function handleModalBackdropClick(e) {
+      if (e.target.id === 'languageModal') closeLanguageModal();
+    }
+
+    function selectQuickLanguage(lang, label) {
+      currentSearchLanguage = lang;
+      document.getElementById('quickLangLabel').innerText = label;
+      
+      const filterSelect = document.getElementById('filterLanguage');
+      if (filterSelect) filterSelect.value = lang;
+
+      document.querySelectorAll('.lang-option-btn').forEach(btn => {
+        if (btn.getAttribute('data-lang') === lang) {
+          btn.classList.add('border-[#32E6E2]', 'bg-[#32E6E2]/10', 'text-[#32E6E2]', 'font-bold');
+          btn.classList.remove('border-[#182635]', 'bg-[#060B10]', 'text-white');
+        } else {
+          btn.classList.remove('border-[#32E6E2]', 'bg-[#32E6E2]/10', 'text-[#32E6E2]', 'font-bold');
+          btn.classList.add('border-[#182635]', 'bg-[#060B10]', 'text-white');
         }
-      }
-    }
+      });
 
-    function copyToClipboard(text, label) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast(`¡${label} copiado al portapapeles!`);
-        }).catch(() => {
-          fallbackCopyToClipboard(text, label);
-        });
-      } else {
-        fallbackCopyToClipboard(text, label);
-      }
-    }
-
-    function fallbackCopyToClipboard(text, label) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      showToast(`¡${label} copiado al portapapeles!`);
+      closeLanguageModal();
     }
 
     function showToast(msg) {
       const toast = document.getElementById('toast');
-      document.getElementById('toastMessage').textContent = msg;
-      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
-      toast.classList.add('opacity-100', 'translate-y-0');
-      
+      document.getElementById('toastMessage').innerText = msg;
+      toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
       setTimeout(() => {
-        toast.classList.remove('opacity-100', 'translate-y-0');
-        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
-      }, 2500);
+        toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+      }, 3000);
     }
+
+    function copyToClipboard(text) {
+      const dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = text;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      showToast('Cita copiada al portapapeles');
+    }
+
+    function loadMoreResults() {
+      const targetRows = parseInt(document.getElementById('filterRowsCount')?.value || '10');
+      currentOffset += targetRows;
+      handleSearch(null, true);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      updateLibraryBadge();
+
+      const filterLangSelect = document.getElementById('filterLanguage');
+      if (filterLangSelect) {
+        filterLangSelect.addEventListener('change', (e) => {
+          const selectedOption = e.target.options[e.target.selectedIndex];
+          selectQuickLanguage(e.target.value, selectedOption.text);
+        });
+      }
+    });
   </script>
 </body>
 </html>
