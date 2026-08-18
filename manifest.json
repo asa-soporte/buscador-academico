@@ -1,0 +1,27 @@
+{
+  "name": "DOI Finder - Buscador Académico",
+  "short_name": "DOI Finder",
+  "description": "Buscador Académico, Extracción de Metadatos, Citas APA/IEEE/BibTeX y Gestor Bibliográfico.",
+  "start_url": "./index.html",
+  "id": "doi-finder-app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#060B10",
+  "theme_color": "#060B10",
+  "categories": ["education", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "192x192 512x512 any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "192x192 512x512 any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

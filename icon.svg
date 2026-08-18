@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="128" fill="#060B10"/>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="#0B121C" stroke="#182635" stroke-width="8"/>
+  <defs>
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#32E6E2"/>
+      <stop offset="100%" stop-color="#00A3FF"/>
+    </linearGradient>
+    <linearGradient id="bookGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer glowing search circle -->
+  <circle cx="236" cy="220" r="110" fill="none" stroke="url(#cyanGlow)" stroke-width="28" stroke-linecap="round"/>
+  <line x1="320" y1="304" x2="410" y2="394" stroke="url(#cyanGlow)" stroke-width="32" stroke-linecap="round"/>
+  
+  <!-- Academic Graduation Cap / Document inside lens -->
+  <path d="M 180 200 L 236 170 L 292 200 L 236 230 Z" fill="url(#cyanGlow)"/>
+  <path d="M 196 215 L 196 245 C 196 260, 276 260, 276 245 L 276 215" fill="none" stroke="url(#cyanGlow)" stroke-width="8" stroke-linecap="round"/>
+  <line x1="292" y1="200" x2="292" y2="245" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="292" cy="250" r="6" fill="#32E6E2"/>
+
+  <!-- DOI text badge at bottom -->
+  <rect x="136" y="400" width="240" height="52" rx="26" fill="#101D2B" stroke="#32E6E2" stroke-width="4"/>
+  <text x="256" y="436" fill="#32E6E2" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="26" text-anchor="middle" letter-spacing="4">DOI FINDER</text>
+</svg>
