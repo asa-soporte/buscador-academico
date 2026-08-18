@@ -1,0 +1,33 @@
+{
+  "name": "DOI Finder - Buscador Académico",
+  "short_name": "DOI Finder",
+  "description": "Buscador Académico, Extracción de Metadatos, Citas APA/IEEE/BibTeX y Gestor Bibliográfico.",
+  "start_url": "/",
+  "id": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#060B10",
+  "theme_color": "#060B10",
+  "categories": ["education", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
