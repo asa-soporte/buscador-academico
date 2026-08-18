@@ -2,25 +2,25 @@
   "name": "DOI Finder - Buscador Académico",
   "short_name": "DOI Finder",
   "description": "Buscador Académico, Extracción de Metadatos, Citas APA/IEEE/BibTeX y Gestor Bibliográfico.",
-  "start_url": "./index.html",
-  "scope": "./",
-  "id": "doi-finder-app",
+  "start_url": "/buscador-academico/index.html",
+  "scope": "/buscador-academico/",
+  "id": "/buscador-academico/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#060B10",
   "theme_color": "#060B10",
   "categories": ["education", "productivity"],
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/graduation-cap.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icon.svg",
-      "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ]
