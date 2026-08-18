@@ -6,6 +6,11 @@
   <title>Buscador Académico Avanzado & Gestor DOI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" type="image/svg+xml" href="./icon.svg" />
+<meta name="theme-color" content="#060B10" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     body { 
@@ -1683,5 +1688,13 @@
       }, 2500);
     }
   </script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('PWA Service Worker listo', reg.scope))
+        .catch(err => console.log('SW error', err));
+    });
+  }
+</script>
 </body>
 </html>
