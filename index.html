@@ -1688,11 +1688,12 @@
       }, 2500);
     }
   </script>
-if ('serviceWorker' in navigator) {
+<script>
+  if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('PWA Service Worker listo', reg.scope))
-        .catch(err => console.log('SW error', err));
+      navigator.serviceWorker.register('/buscador-academico/sw.js', { scope: '/buscador-academico/' })
+        .then(reg => console.log('PWA Service Worker registrado:', reg.scope))
+        .catch(err => console.error('Error en Service Worker:', err));
     });
   }
 </script>
