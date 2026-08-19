@@ -6,11 +6,11 @@
   <title>Buscador Académico Avanzado & Gestor DOI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-<link rel="manifest" href="./manifest.json" />
-<link rel="icon" type="image/svg+xml" href="./icon.svg" />
-<meta name="theme-color" content="#060B10" />
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+  <meta name="theme-color" content="#060B10" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     body { 
@@ -43,7 +43,7 @@
         <div>
           <h1 class="font-extrabold text-base sm:text-lg text-white leading-tight flex items-center gap-2">
             <span>DOI Finder</span>
-            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#32E6E2]/20 text-[#32E6E2] border border-[#32E6E2]/30 rounded-full">v2.2</span>
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#32E6E2]/20 text-[#32E6E2] border border-[#32E6E2]/30 rounded-full">v2.3</span>
           </h1>
           <p class="text-[11px] sm:text-xs text-slate-400 line-clamp-1">Buscador Académico, Metadatos, Citas y Gestor Bibliográfico</p>
         </div>
@@ -92,50 +92,68 @@
               </button>
             </div>
 
-            <button type="button" onclick="toggleFilters()" class="text-xs text-slate-400 hover:text-[#32E6E2] flex items-center space-x-1 transition-colors self-end sm:self-auto">
-              <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
-              <span>Filtros Avanzados</span>
-              <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform" id="filterChevron"></i>
-            </button>
+            <div class="flex items-center gap-2 self-end sm:self-auto">
+              <!-- Botón Limpiar Todos los Filtros -->
+              <button type="button" onclick="clearAllFilters()" class="text-xs text-slate-400 hover:text-red-400 flex items-center space-x-1 transition-colors px-2 py-1 rounded-lg hover:bg-red-950/30" title="Restablecer todos los filtros a por defecto">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span class="hidden sm:inline">Limpiar Filtros</span>
+              </button>
+
+              <button type="button" onclick="toggleFilters()" class="text-xs text-slate-400 hover:text-[#32E6E2] flex items-center space-x-1 transition-colors">
+                <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+                <span>Filtros Avanzados</span>
+                <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform" id="filterChevron"></i>
+              </button>
+            </div>
           </div>
 
           <!-- Advanced Filters Grid -->
-          <div id="advancedFilters" class="hidden grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3 p-3 sm:p-4 bg-[#060B10] border border-[#182635] rounded-xl text-xs">
-            <div>
-              <label class="block text-slate-400 mb-1">Idioma del Artículo</label>
-              <select id="filterLanguage" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
-                <option value="all" selected>Todos los idiomas</option>
-                <option value="es">Español</option>
-                <option value="en">Inglés</option>
-                <option value="pt">Portugués</option>
-                <option value="fr">Francés</option>
-                <option value="de">Alemán</option>
-                <option value="it">Italiano</option>
-              </select>
+          <div id="advancedFilters" class="hidden bg-[#060B10] border border-[#182635] rounded-xl p-3 sm:p-4 text-xs space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              <div>
+                <label class="block text-slate-400 mb-1">Idioma del Artículo</label>
+                <select id="filterLanguage" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
+                  <option value="all" selected>Todos los idiomas</option>
+                  <option value="es">Español</option>
+                  <option value="en">Inglés</option>
+                  <option value="pt">Portugués</option>
+                  <option value="fr">Francés</option>
+                  <option value="de">Alemán</option>
+                  <option value="it">Italiano</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">Año Inicio</label>
+                <input type="number" id="filterYearMin" placeholder="Ej: 2018" min="1900" max="2026" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">Año Fin</label>
+                <input type="number" id="filterYearMax" placeholder="Ej: 2026" min="1900" max="2026" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">Tipo de Acceso</label>
+                <select id="filterOpenAccess" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
+                  <option value="all">Todos los artículos</option>
+                  <option value="oa">Solo Acceso Abierto (PDF Gratis)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">Resultados por Búsqueda</label>
+                <select id="filterRowsCount" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
+                  <option value="10" selected>10 por página</option>
+                  <option value="20">20 por página</option>
+                  <option value="50">50 por página</option>
+                  <option value="100">100 por página</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <label class="block text-slate-400 mb-1">Año Inicio</label>
-              <input type="number" id="filterYearMin" placeholder="Ej: 2018" min="1900" max="2026" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
-            </div>
-            <div>
-              <label class="block text-slate-400 mb-1">Año Fin</label>
-              <input type="number" id="filterYearMax" placeholder="Ej: 2026" min="1900" max="2026" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
-            </div>
-            <div>
-              <label class="block text-slate-400 mb-1">Tipo de Acceso</label>
-              <select id="filterOpenAccess" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
-                <option value="all">Todos los artículos</option>
-                <option value="oa">Solo Acceso Abierto (PDF Gratis)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-slate-400 mb-1">Resultados por Búsqueda</label>
-              <select id="filterRowsCount" class="w-full bg-[#0b121c] border border-[#1a2938] rounded-lg px-3 py-2 text-white outline-none focus:border-[#32E6E2]">
-                <option value="10" selected>10 por página</option>
-                <option value="20">20 por página</option>
-                <option value="50">50 por página</option>
-                <option value="100">100 por página</option>
-              </select>
+
+            <div class="flex items-center justify-between border-t border-[#182635] pt-2.5 text-[11px] text-slate-400">
+              <span>Ajusta tus parámetros para refinar las fuentes bibliográficas</span>
+              <button type="button" onclick="clearAllFilters()" class="px-3 py-1.5 bg-[#182635] hover:bg-red-950/60 hover:text-red-300 text-slate-300 border border-[#182635] hover:border-red-800/60 rounded-lg font-semibold flex items-center gap-1.5 transition-all">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>Restablecer Filtros</span>
+              </button>
             </div>
           </div>
 
@@ -146,8 +164,19 @@
                 type="text" 
                 id="searchInput" 
                 placeholder="Buscar por DOI, Título o Autor..." 
-                class="w-full bg-[#060B10] border border-[#1a2938] focus:border-[#32E6E2] focus:ring-2 focus:ring-[#32E6E2]/20 text-white placeholder-slate-500 pl-10 sm:pl-12 pr-4 py-3 rounded-xl text-xs sm:text-sm md:text-base outline-none transition-all shadow-inner"
+                oninput="toggleClearSearchBtn()"
+                class="w-full bg-[#060B10] border border-[#1a2938] focus:border-[#32E6E2] focus:ring-2 focus:ring-[#32E6E2]/20 text-white placeholder-slate-500 pl-10 sm:pl-12 pr-10 py-3 rounded-xl text-xs sm:text-sm md:text-base outline-none transition-all shadow-inner"
               >
+              <!-- Botón X para limpiar el buscador -->
+              <button 
+                type="button" 
+                id="clearSearchBtn" 
+                onclick="clearSearchInput()" 
+                class="hidden absolute right-3 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-[#182635] transition-colors"
+                title="Limpiar campo de búsqueda"
+              >
+                <i data-lucide="x" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+              </button>
             </div>
             <button 
               type="submit" 
@@ -278,7 +307,7 @@
   <footer class="border-t border-[#182635] bg-[#060B10]/80 backdrop-blur-sm py-4 mt-auto">
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-center text-xs text-slate-400 space-x-1.5">
       <span class="text-slate-500">Desarrollado por:</span>
-      <span class="font-extrabold tracking-wide text-[#32E6E2]">ASA SOPORTE INFORMÁTICO</span>
+      <span class="font-extrabold tracking-wide text-[#32E6E2]">ASA Soporte Informático</span>
     </div>
   </footer>
 
@@ -360,6 +389,46 @@
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
+    function toggleClearSearchBtn() {
+      const input = document.getElementById('searchInput');
+      const btn = document.getElementById('clearSearchBtn');
+      if (!input || !btn) return;
+      if (input.value.trim().length > 0) {
+        btn.classList.remove('hidden');
+      } else {
+        btn.classList.add('hidden');
+      }
+    }
+
+    function clearSearchInput() {
+      const input = document.getElementById('searchInput');
+      const btn = document.getElementById('clearSearchBtn');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      if (btn) {
+        btn.classList.add('hidden');
+      }
+    }
+
+    function clearAllFilters() {
+      setSearchMode('auto');
+      selectQuickLanguage('all', 'Todos los idiomas', false);
+      
+      const filterYearMin = document.getElementById('filterYearMin');
+      const filterYearMax = document.getElementById('filterYearMax');
+      const filterOpenAccess = document.getElementById('filterOpenAccess');
+      const filterRowsCount = document.getElementById('filterRowsCount');
+
+      if (filterYearMin) filterYearMin.value = '';
+      if (filterYearMax) filterYearMax.value = '';
+      if (filterOpenAccess) filterOpenAccess.value = 'all';
+      if (filterRowsCount) filterRowsCount.value = '10';
+
+      showToast('Todos los filtros han sido restablecidos');
+    }
+
     function detectItemLanguage(title = '', abstract = '', declared = '') {
       if (declared && ['es', 'en', 'pt', 'fr', 'de', 'it'].includes(declared.toLowerCase())) {
         return declared.toLowerCase();
@@ -421,7 +490,6 @@
 
       if (crossrefItem) {
         const item = processCrossrefItem(crossrefItem, unpaywallData, semanticData);
-        // Garantizar la resolución del PDF desde Semantic Scholar u OpenAlex si Unpaywall no lo tiene directamente
         if (!item.pdfUrl) {
           if (semanticData?.openAccessPdf?.url) {
             item.pdfUrl = semanticData.openAccessPdf.url;
@@ -596,6 +664,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       updateLibraryBadge();
+      toggleClearSearchBtn();
 
       const filterLangSelect = document.getElementById('filterLanguage');
       if (filterLangSelect) {
@@ -754,6 +823,7 @@
 
     function quickSearch(q) {
       document.getElementById('searchInput').value = q;
+      toggleClearSearchBtn();
       handleSearch(new Event('submit'));
     }
 
@@ -1183,7 +1253,6 @@
       loadingState.classList.remove('hidden');
 
       try {
-        // Independientemente del modo de búsqueda inicial, consultar metadatos completos y PDF
         const article = await fetchArticleFullDetails(doi);
         loadingState.classList.add('hidden');
         displaySingleArticle(article, true);
@@ -1688,14 +1757,14 @@
       }, 2500);
     }
   </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/buscador-academico/sw.js', { scope: '/buscador-academico/' })
-        .then(reg => console.log('PWA Service Worker registrado:', reg.scope))
-        .catch(err => console.error('Error en Service Worker:', err));
-    });
-  }
-</script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/buscador-academico/sw.js', { scope: '/buscador-academico/' })
+          .then(reg => console.log('PWA Service Worker registrado:', reg.scope))
+          .catch(err => console.error('Error en Service Worker:', err));
+      });
+    }
+  </script>
 </body>
 </html>
