@@ -43,7 +43,7 @@
         <div>
           <h1 class="font-extrabold text-base sm:text-lg text-white leading-tight flex items-center gap-2">
             <span>DOI Finder</span>
-            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#32E6E2]/20 text-[#32E6E2] border border-[#32E6E2]/30 rounded-full">v2.3</span>
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#32E6E2]/20 text-[#32E6E2] border border-[#32E6E2]/30 rounded-full">v2.4</span>
           </h1>
           <p class="text-[11px] sm:text-xs text-slate-400 line-clamp-1">Buscador Académico, Metadatos, Citas y Gestor Bibliográfico</p>
         </div>
@@ -93,7 +93,6 @@
             </div>
 
             <div class="flex items-center gap-2 self-end sm:self-auto">
-              <!-- Botón Limpiar Todos los Filtros -->
               <button type="button" onclick="clearAllFilters()" class="text-xs text-slate-400 hover:text-red-400 flex items-center space-x-1 transition-colors px-2 py-1 rounded-lg hover:bg-red-950/30" title="Restablecer todos los filtros a por defecto">
                 <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                 <span class="hidden sm:inline">Limpiar Filtros</span>
@@ -167,7 +166,6 @@
                 oninput="toggleClearSearchBtn()"
                 class="w-full bg-[#060B10] border border-[#1a2938] focus:border-[#32E6E2] focus:ring-2 focus:ring-[#32E6E2]/20 text-white placeholder-slate-500 pl-10 sm:pl-12 pr-10 py-3 rounded-xl text-xs sm:text-sm md:text-base outline-none transition-all shadow-inner"
               >
-              <!-- Botón X para limpiar el buscador -->
               <button 
                 type="button" 
                 id="clearSearchBtn" 
@@ -188,7 +186,6 @@
             </button>
           </div>
 
-          <!-- Quick Samples -->
           <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-400 pt-1">
             <span class="text-slate-500 flex-shrink-0">Sugerencias:</span>
             <button type="button" onclick="quickSearch('10.1038/s41586-020-2649-2')" class="hover:text-[#32E6E2] underline decoration-slate-700 text-left">CRISPR DOI</button>
@@ -318,6 +315,7 @@
     </div>
   </div>
 
+  <!-- LANGUAGE MODAL -->
   <div id="languageModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200" onclick="handleModalBackdropClick(event)">
     <div class="bg-[#0b121c] border border-[#182635] w-full max-w-md rounded-2xl p-5 shadow-2xl space-y-4 transform scale-95 transition-transform duration-200" id="languageModalCard">
       
@@ -376,6 +374,76 @@
     </div>
   </div>
 
+  <!-- SHARE MODAL -->
+  <div id="shareModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200" onclick="handleShareModalBackdropClick(event)">
+    <div class="bg-[#0b121c] border border-[#182635] w-full max-w-md rounded-2xl p-5 shadow-2xl space-y-4 transform scale-95 transition-transform duration-200" id="shareModalCard">
+      
+      <div class="flex items-center justify-between border-b border-[#182635] pb-3">
+        <div class="flex items-center space-x-2.5">
+          <div class="p-2 bg-[#32E6E2]/10 text-[#32E6E2] rounded-xl border border-[#32E6E2]/30">
+            <i data-lucide="share-2" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-base leading-tight">Compartir Artículo</h3>
+            <p class="text-xs text-slate-400">Difunde esta investigación académica</p>
+          </div>
+        </div>
+        <button onclick="closeShareModal()" class="p-1.5 text-slate-400 hover:text-white hover:bg-[#182635] rounded-lg transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-3 bg-[#060B10] border border-[#182635] rounded-xl space-y-1">
+        <h4 id="shareModalTitle" class="text-xs font-bold text-white line-clamp-2"></h4>
+        <p id="shareModalMeta" class="text-[11px] text-slate-400 line-clamp-1"></p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 text-xs font-medium">
+        <button onclick="shareViaNative()" id="nativeShareBtn" class="hidden col-span-2 p-3 rounded-xl bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-extrabold text-center flex items-center justify-center space-x-2 transition-all">
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+          <span>Compartir mediante el Sistema</span>
+        </button>
+
+        <button onclick="copyShareLink()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-[#182635] text-[#32E6E2] rounded-lg"><i data-lucide="link" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">Copiar Enlace</span>
+        </button>
+
+        <button onclick="copyShareCitation()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-[#182635] text-[#32E6E2] rounded-lg"><i data-lucide="quote" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">Copiar Cita + Link</span>
+        </button>
+
+        <button onclick="shareViaWhatsApp()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-emerald-950 text-emerald-400 rounded-lg"><i data-lucide="message-circle" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">WhatsApp</span>
+        </button>
+
+        <button onclick="shareViaEmail()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-sky-950 text-sky-400 rounded-lg"><i data-lucide="mail" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">Correo Electrónico</span>
+        </button>
+
+        <button onclick="shareViaTwitter()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-[#182635] text-slate-200 rounded-lg"><i data-lucide="twitter" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">X / Twitter</span>
+        </button>
+
+        <button onclick="shareViaLinkedIn()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-blue-950 text-blue-400 rounded-lg"><i data-lucide="linkedin" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">LinkedIn</span>
+        </button>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeShareModal()" class="px-4 py-2 bg-[#182635] hover:bg-[#203246] text-slate-200 text-xs font-bold rounded-xl transition-colors">
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <script>
     let savedLibrary = JSON.parse(localStorage.getItem('scholar_library') || '[]');
     let currentSearchMode = 'auto';
@@ -384,6 +452,7 @@
     let currentArticleList = [];
     let totalSearchResultsCount = 0;
     let activeArticle = null;
+    let currentShareArticle = null;
 
     function escapeRegExp(string) {
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -705,6 +774,130 @@
       if (e.target.id === 'languageModal') {
         closeLanguageModal();
       }
+    }
+
+    function openShareModal(doi) {
+      const art = (activeArticle && activeArticle.doi === doi) 
+        ? activeArticle 
+        : (savedLibrary.find(a => a.doi === doi) || currentArticleList.find(a => a.doi === doi));
+      if (!art) return;
+
+      currentShareArticle = art;
+
+      const modal = document.getElementById('shareModal');
+      const card = document.getElementById('shareModalCard');
+      const titleEl = document.getElementById('shareModalTitle');
+      const metaEl = document.getElementById('shareModalMeta');
+      const nativeBtn = document.getElementById('nativeShareBtn');
+
+      if (titleEl) titleEl.textContent = art.title;
+      if (metaEl) metaEl.textContent = `${art.authors} (${art.year}) • ${art.journal}`;
+
+      if (nativeBtn) {
+        if (navigator.share) {
+          nativeBtn.classList.remove('hidden');
+        } else {
+          nativeBtn.classList.add('hidden');
+        }
+      }
+
+      if (!modal || !card) return;
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+        card.classList.add('scale-100');
+      }, 10);
+
+      lucide.createIcons();
+    }
+
+    function closeShareModal() {
+      const modal = document.getElementById('shareModal');
+      const card = document.getElementById('shareModalCard');
+      if (!modal || !card) return;
+
+      modal.classList.add('opacity-0');
+      card.classList.remove('scale-100');
+      card.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    function handleShareModalBackdropClick(e) {
+      if (e.target.id === 'shareModal') {
+        closeShareModal();
+      }
+    }
+
+    async function shareViaNative() {
+      if (!currentShareArticle) return;
+      const url = `https://doi.org/${currentShareArticle.doi}`;
+      const text = `📄 "${currentShareArticle.title}"\n${currentShareArticle.authors} (${currentShareArticle.year})`;
+      
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: currentShareArticle.title,
+            text: text,
+            url: url
+          });
+          showToast('Artículo compartido con éxito');
+          closeShareModal();
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            copyShareLink();
+          }
+        }
+      } else {
+        copyShareLink();
+      }
+    }
+
+    function copyShareLink() {
+      if (!currentShareArticle) return;
+      const url = `https://doi.org/${currentShareArticle.doi}`;
+      copyToClipboard(url, 'Enlace DOI');
+      closeShareModal();
+    }
+
+    function copyShareCitation() {
+      if (!currentShareArticle) return;
+      const text = `${currentShareArticle.apa}\nhttps://doi.org/${currentShareArticle.doi}`;
+      copyToClipboard(text, 'Cita APA y Enlace');
+      closeShareModal();
+    }
+
+    function shareViaWhatsApp() {
+      if (!currentShareArticle) return;
+      const text = `📄 *${currentShareArticle.title}*\n${currentShareArticle.authors} (${currentShareArticle.year})\n\nDOI: https://doi.org/${currentShareArticle.doi}`;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+      closeShareModal();
+    }
+
+    function shareViaEmail() {
+      if (!currentShareArticle) return;
+      const subject = `Artículo Académico: ${currentShareArticle.title}`;
+      const body = `Te comparto esta investigación académica:\n\nTítulo: ${currentShareArticle.title}\nAutores: ${currentShareArticle.authors}\nPublicación: ${currentShareArticle.journal} (${currentShareArticle.year})\n\nEnlace DOI: https://doi.org/${currentShareArticle.doi}`;
+      window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+      closeShareModal();
+    }
+
+    function shareViaTwitter() {
+      if (!currentShareArticle) return;
+      const text = `📄 "${currentShareArticle.title}" por ${currentShareArticle.authors}`;
+      const url = `https://doi.org/${currentShareArticle.doi}`;
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+      closeShareModal();
+    }
+
+    function shareViaLinkedIn() {
+      if (!currentShareArticle) return;
+      const url = `https://doi.org/${currentShareArticle.doi}`;
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+      closeShareModal();
     }
 
     function selectQuickLanguage(code, labelText, close = true) {
@@ -1220,6 +1413,13 @@
             
             <div class="flex items-center space-x-2 self-end sm:self-start flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-[#182635] w-full sm:w-auto justify-end">
               <button 
+                onclick="openShareModal('${item.doi}')"
+                title="Compartir artículo"
+                class="p-2 sm:p-2.5 bg-[#060B10] text-slate-400 hover:text-[#32E6E2] hover:bg-[#182635] rounded-lg border border-[#182635] text-xs transition-colors"
+              >
+                <i data-lucide="share-2" class="w-4 h-4"></i>
+              </button>
+              <button 
                 onclick="toggleSaveArticle('${item.doi}')"
                 title="Guardar en biblioteca"
                 class="p-2 sm:p-2.5 ${isSaved ? 'bg-[#32E6E2] text-[#060B10]' : 'bg-[#060B10] text-slate-400 hover:text-white'} rounded-lg border border-[#182635] text-xs transition-colors"
@@ -1310,6 +1510,10 @@
             </div>
 
             <div class="flex items-center space-x-2 self-end sm:self-auto">
+              <button onclick="openShareModal('${art.doi}')" class="px-3.5 py-1.5 bg-[#060B10] hover:bg-[#101b2b] text-slate-300 hover:text-[#32E6E2] rounded-lg border border-[#182635] text-xs font-bold flex items-center space-x-1.5 transition-colors">
+                <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+                <span>Compartir</span>
+              </button>
               <button onclick="toggleSaveArticle('${art.doi}')" class="px-3.5 py-1.5 ${isSaved ? 'bg-[#32E6E2] text-[#060B10]' : 'bg-[#060B10] text-slate-300'} rounded-lg border border-[#182635] text-xs font-bold flex items-center space-x-1.5">
                 <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
                 <span>${isSaved ? 'Guardado' : 'Guardar'}</span>
@@ -1618,6 +1822,9 @@
               <p class="text-xs text-slate-400 line-clamp-1"><strong>Autores:</strong> ${art.authors}</p>
             </div>
             <div class="flex items-center space-x-2 self-end sm:self-start flex-shrink-0">
+              <button onclick="openShareModal('${art.doi}')" class="p-2 bg-[#060B10] text-slate-300 hover:text-[#32E6E2] hover:bg-[#182635] border border-[#182635] rounded-lg text-xs transition-colors" title="Compartir artículo">
+                <i data-lucide="share-2" class="w-4 h-4"></i>
+              </button>
               <button onclick="toggleSaveArticle('${art.doi}')" class="p-2 bg-red-950/40 text-red-400 hover:bg-red-900/40 border border-red-800/60 rounded-lg text-xs" title="Eliminar">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
