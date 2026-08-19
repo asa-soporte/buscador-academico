@@ -1,16 +1,34 @@
 {
+  "$schema": "https://json.schemastore.org/web-manifest.json",
   "name": "DOI Finder - Buscador Académico",
   "short_name": "DOI Finder",
   "description": "Buscador Académico, Extracción de Metadatos, Citas APA/IEEE/BibTeX y Gestor Bibliográfico.",
-  "start_url": "/buscador-academico/index.html",
-  "scope": "/buscador-academico/",
+  "start_url": "./",
+  "scope": "./",
   "id": "/buscador-academico/",
   "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "any",
   "background_color": "#060B10",
   "theme_color": "#060B10",
   "categories": ["education", "productivity"],
   "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "./icon-512.png",
       "sizes": "512x512",
@@ -18,7 +36,13 @@
       "purpose": "any"
     },
     {
-      "src": "./icon-512.png",
+      "src": "./icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
