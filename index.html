@@ -1972,49 +1972,54 @@
           .catch(err => console.error('Error en Service Worker:', err));
       });
     }
-  </script>
-  let eventoInstalacion;
+  <!-- Banner de aviso para instalar la PWA -->
+  <div id="mensaje-instalacion" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #060B10; border: 1px solid #1f2937; color: #ffffff; padding: 12px 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 9999; align-items: center; gap: 12px;">
+    <span>Existe una versión instalable de esta app.</span>
+    <button id="btn-instalar-pwa" style="background: #008080; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+      Instalar
+    </button>
+  </div>
 
-// Chrome dispara este evento únicamente cuando confirma que la PWA es instalable
-// y comprueba que el usuario NO la tiene instalada previamente.
-window.addEventListener('beforeinstallprompt', (e) => {
-  // Evita el aviso por defecto de Chrome para usar el tuyo
-  e.preventDefault();
-  eventoInstalacion = e;
-
-  // Hace visible el banner que creaste en el HTML
-  const banner = document.getElementById('mensaje-instalacion');
-  if (banner) {
-    banner.style.display = 'flex';
-  }
-});
-
-// Evento para el botón de tu banner
-document.addEventListener('DOMContentLoaded', () => {
-  const btnInstalar = document.getElementById('btn-instalar-pwa');
-  
-  btnInstalar?.addEventListener('click', async () => {
-    if (!eventoInstalacion) return;
-
-    // Despliega la ventana nativa de confirmación de Chrome
-    eventoInstalacion.prompt();
-
-    const choice = await eventoInstalacion.userChoice;
-    if (choice.outcome === 'accepted') {
-      console.log('El usuario instaló la PWA');
+  <!-- Script de PWA y manejo del evento -->
+  <script>
+    // Registro del Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js');
+      });
     }
 
-    // Oculta el banner tras la decisión
-    eventoInstalacion = null;
-    document.getElementById('mensaje-instalacion').style.display = 'none';
-  });
-});
-  <!-- Banner de aviso para instalar la PWA -->
-<div id="mensaje-instalacion" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #060B10; border: 1px solid #1f2937; color: #ffffff; padding: 12px 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 9999; align-items: center; gap: 12px;">
-  <span>Existe una versión instalable de esta app.</span>
-  <button id="btn-instalar-pwa" style="background: #008080; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">
-    Instalar
-  </button>
-</div>
+    // Lógica para el banner de instalación
+    let eventoInstalacion;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      eventoInstalacion = e;
+
+      const banner = document.getElementById('mensaje-instalacion');
+      if (banner) {
+        banner.style.display = 'flex';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnInstalar = document.getElementById('btn-instalar-pwa');
+      
+      btnInstalar?.addEventListener('click', async () => {
+        if (!eventoInstalacion) return;
+
+        eventoInstalacion.prompt();
+
+        const choice = await eventoInstalacion.userChoice;
+        if (choice.outcome === 'accepted') {
+          console.log('El usuario instaló la PWA');
+        }
+
+        eventoInstalacion = null;
+        const banner = document.getElementById('mensaje-instalacion');
+        if (banner) banner.style.display = 'none';
+      });
+    });
+  </script>
 </body>
 </html>
