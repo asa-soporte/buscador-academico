@@ -43,7 +43,7 @@
         <div>
           <h1 class="font-extrabold text-base sm:text-lg text-white leading-tight flex items-center gap-2">
             <span>DOI Finder</span>
-            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#32E6E2]/20 text-[#32E6E2] border border-[#32E6E2]/30 rounded-full">v2.4</span>
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-[#32E6E2]/20 text-[#32E6E2] border border-[#32E6E2]/30 rounded-full">v2.5</span>
           </h1>
           <p class="text-[11px] sm:text-xs text-slate-400 line-clamp-1">Buscador Académico, Metadatos, Citas y Gestor Bibliográfico</p>
         </div>
@@ -253,11 +253,16 @@
           <p class="text-xs text-slate-400">Artículos guardados localmente en tu navegador</p>
         </div>
         <div class="flex flex-wrap items-center gap-2 pt-2 sm:pt-0">
-          <button onclick="exportLibrary('bibtex')" class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-all">
+          <!-- Botón de compartir todos los artículos -->
+          <button onclick="shareEntireLibrary()" class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-all shadow-md shadow-[#32E6E2]/10">
+            <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+            <span>Compartir Todo</span>
+          </button>
+          <button onclick="exportLibrary('bibtex')" class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#182635] hover:bg-[#203246] text-[#32E6E2] border border-[#32E6E2]/40 hover:border-[#32E6E2] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-all">
             <i data-lucide="file-code" class="w-3.5 h-3.5"></i>
             <span>Exportar .BIB</span>
           </button>
-          <button onclick="exportLibrary('ris')" class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-all">
+          <button onclick="exportLibrary('ris')" class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#182635] hover:bg-[#203246] text-[#32E6E2] border border-[#32E6E2]/40 hover:border-[#32E6E2] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-all">
             <i data-lucide="download" class="w-3.5 h-3.5"></i>
             <span>Exportar .RIS</span>
           </button>
@@ -303,7 +308,7 @@
 
   <footer class="border-t border-[#182635] bg-[#060B10]/80 backdrop-blur-sm py-4 mt-auto">
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-center text-xs text-slate-400 space-x-1.5">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="shield-check" aria-hidden="true" class="lucide lucide-shield-check w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
+      <i data-lucide="shield-check" class="w-4 h-4 text-[#32E6E2] shrink-0"></i>
       <span class="text-slate-500">Desarrollado por:</span>
       <span class="font-extrabold tracking-wide text-[#32E6E2]">ASA Soporte Informático</span>
     </div>
@@ -375,7 +380,7 @@
     </div>
   </div>
 
-  <!-- SHARE MODAL -->
+  <!-- SINGLE SHARE MODAL -->
   <div id="shareModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200" onclick="handleShareModalBackdropClick(event)">
     <div class="bg-[#0b121c] border border-[#182635] w-full max-w-md rounded-2xl p-5 shadow-2xl space-y-4 transform scale-95 transition-transform duration-200" id="shareModalCard">
       
@@ -438,6 +443,75 @@
 
       <div class="pt-2 flex justify-end">
         <button onclick="closeShareModal()" class="px-4 py-2 bg-[#182635] hover:bg-[#203246] text-slate-200 text-xs font-bold rounded-xl transition-colors">
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SHARE LIBRARY MODAL (Compartir Toda la Biblioteca) -->
+  <div id="shareLibraryModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-200" onclick="handleShareLibraryModalBackdropClick(event)">
+    <div class="bg-[#0b121c] border border-[#182635] w-full max-w-md rounded-2xl p-5 shadow-2xl space-y-4 transform scale-95 transition-transform duration-200" id="shareLibraryModalCard">
+      
+      <div class="flex items-center justify-between border-b border-[#182635] pb-3">
+        <div class="flex items-center space-x-2.5">
+          <div class="p-2 bg-[#32E6E2]/10 text-[#32E6E2] rounded-xl border border-[#32E6E2]/30">
+            <i data-lucide="share-2" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-base leading-tight">Compartir Biblioteca Completa</h3>
+            <p id="shareLibrarySubtitle" class="text-xs text-slate-400">Difunde todos tus artículos guardados</p>
+          </div>
+        </div>
+        <button onclick="closeShareLibraryModal()" class="p-1.5 text-slate-400 hover:text-white hover:bg-[#182635] rounded-lg transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-3 bg-[#060B10] border border-[#182635] rounded-xl space-y-1 max-h-36 overflow-y-auto custom-scrollbar">
+        <p id="shareLibraryPreview" class="text-xs text-slate-300 font-mono whitespace-pre-wrap leading-relaxed"></p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 text-xs font-medium">
+        <button onclick="shareLibraryViaNative()" id="nativeLibraryShareBtn" class="hidden col-span-2 p-3 rounded-xl bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-extrabold text-center flex items-center justify-center space-x-2 transition-all">
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+          <span>Compartir mediante el Sistema</span>
+        </button>
+
+        <button onclick="copyLibraryShareText()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-[#182635] text-[#32E6E2] rounded-lg"><i data-lucide="copy" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">Copiar Lista</span>
+        </button>
+
+        <button onclick="copyLibraryCitationsText()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-[#182635] text-[#32E6E2] rounded-lg"><i data-lucide="quote" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">Copiar Citas APA</span>
+        </button>
+
+        <button onclick="shareLibraryViaWhatsApp()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-emerald-950 text-emerald-400 rounded-lg"><i data-lucide="message-circle" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">WhatsApp</span>
+        </button>
+
+        <button onclick="shareLibraryViaEmail()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-sky-950 text-sky-400 rounded-lg"><i data-lucide="mail" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">Correo Electrónico</span>
+        </button>
+
+        <button onclick="shareLibraryViaTwitter()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-[#182635] text-slate-200 rounded-lg"><i data-lucide="twitter" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">X / Twitter</span>
+        </button>
+
+        <button onclick="shareLibraryViaLinkedIn()" class="p-3 rounded-xl border border-[#182635] bg-[#060B10] hover:border-[#32E6E2]/50 text-left text-white flex items-center space-x-2.5 transition-all">
+          <div class="p-1.5 bg-blue-950 text-blue-400 rounded-lg"><i data-lucide="linkedin" class="w-4 h-4"></i></div>
+          <span class="flex-1 truncate">LinkedIn</span>
+        </button>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeShareLibraryModal()" class="px-4 py-2 bg-[#182635] hover:bg-[#203246] text-slate-200 text-xs font-bold rounded-xl transition-colors">
           Cerrar
         </button>
       </div>
@@ -777,6 +851,7 @@
       }
     }
 
+    /* COMPARTIR UN SOLO ARTÍCULO */
     function openShareModal(doi) {
       const art = (activeArticle && activeArticle.doi === doi) 
         ? activeArticle 
@@ -899,6 +974,146 @@
       const url = `https://doi.org/${currentShareArticle.doi}`;
       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
       closeShareModal();
+    }
+
+    /* COMPARTIR BIBLIOTECA COMPLETA (NUEVA FUNCIONALIDAD) */
+    function getLibraryShareText() {
+      if (savedLibrary.length === 0) return '';
+      let text = `📚 Mi Biblioteca Guardada (${savedLibrary.length} artículo${savedLibrary.length > 1 ? 's' : ''}):\n\n`;
+      savedLibrary.forEach((art, index) => {
+        text += `${index + 1}. "${art.title}"\n`;
+        text += `   Autores: ${art.authors} (${art.year})\n`;
+        text += `   Publicación: ${art.journal}\n`;
+        text += `   DOI: https://doi.org/${art.doi}\n\n`;
+      });
+      return text.trim();
+    }
+
+    function getLibraryCitationsText() {
+      if (savedLibrary.length === 0) return '';
+      let text = `📚 Referencias Bibliográficas (APA 7) - ${savedLibrary.length} artículo${savedLibrary.length > 1 ? 's' : ''}:\n\n`;
+      savedLibrary.forEach((art, index) => {
+        text += `${index + 1}. ${art.apa}\n\n`;
+      });
+      return text.trim();
+    }
+
+    function shareEntireLibrary() {
+      if (savedLibrary.length === 0) {
+        showToast('No hay artículos en la biblioteca para compartir.');
+        return;
+      }
+
+      const modal = document.getElementById('shareLibraryModal');
+      const card = document.getElementById('shareLibraryModalCard');
+      const subtitle = document.getElementById('shareLibrarySubtitle');
+      const preview = document.getElementById('shareLibraryPreview');
+      const nativeBtn = document.getElementById('nativeLibraryShareBtn');
+
+      if (subtitle) subtitle.textContent = `${savedLibrary.length} artículo${savedLibrary.length > 1 ? 's' : ''} listo${savedLibrary.length > 1 ? 's' : ''} para compartir`;
+      if (preview) preview.textContent = getLibraryShareText();
+
+      if (nativeBtn) {
+        if (navigator.share) {
+          nativeBtn.classList.remove('hidden');
+        } else {
+          nativeBtn.classList.add('hidden');
+        }
+      }
+
+      if (!modal || !card) return;
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+        card.classList.add('scale-100');
+      }, 10);
+
+      lucide.createIcons();
+    }
+
+    function closeShareLibraryModal() {
+      const modal = document.getElementById('shareLibraryModal');
+      const card = document.getElementById('shareLibraryModalCard');
+      if (!modal || !card) return;
+
+      modal.classList.add('opacity-0');
+      card.classList.remove('scale-100');
+      card.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    function handleShareLibraryModalBackdropClick(e) {
+      if (e.target.id === 'shareLibraryModal') {
+        closeShareLibraryModal();
+      }
+    }
+
+    async function shareLibraryViaNative() {
+      const text = getLibraryShareText();
+      if (!text) return;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Mi Biblioteca Guardada',
+            text: text
+          });
+          showToast('Biblioteca compartida con éxito');
+          closeShareLibraryModal();
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            copyLibraryShareText();
+          }
+        }
+      } else {
+        copyLibraryShareText();
+      }
+    }
+
+    function copyLibraryShareText() {
+      const text = getLibraryShareText();
+      if (!text) return;
+      copyToClipboard(text, 'Lista de la biblioteca');
+      closeShareLibraryModal();
+    }
+
+    function copyLibraryCitationsText() {
+      const text = getLibraryCitationsText();
+      if (!text) return;
+      copyToClipboard(text, 'Citas APA de la biblioteca');
+      closeShareLibraryModal();
+    }
+
+    function shareLibraryViaWhatsApp() {
+      const text = getLibraryShareText();
+      if (!text) return;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+      closeShareLibraryModal();
+    }
+
+    function shareLibraryViaEmail() {
+      const text = getLibraryShareText();
+      if (!text) return;
+      const subject = `Biblioteca Académica (${savedLibrary.length} artículos)`;
+      window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`, '_blank');
+      closeShareLibraryModal();
+    }
+
+    function shareLibraryViaTwitter() {
+      const text = `📚 Comparto mi selección de ${savedLibrary.length} artículos académicos investigados en DOI Finder:`;
+      const firstDoi = savedLibrary[0]?.doi ? `https://doi.org/${savedLibrary[0].doi}` : '';
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(firstDoi)}`, '_blank');
+      closeShareLibraryModal();
+    }
+
+    function shareLibraryViaLinkedIn() {
+      copyLibraryShareText();
+      window.open(`https://www.linkedin.com/sharing/share-offsite/`, '_blank');
+      closeShareLibraryModal();
     }
 
     function selectQuickLanguage(code, labelText, close = true) {
@@ -1801,7 +2016,7 @@
           <div class="bg-[#0b121c] border border-[#182635] rounded-xl p-8 text-center text-slate-400 space-y-2">
             <i data-lucide="bookmark-x" class="w-8 h-8 mx-auto text-slate-500"></i>
             <p class="font-medium text-sm">No tienes artículos guardados en tu biblioteca.</p>
-            <p class="text-xs text-slate-500">Guarda artículos desde los resultados de búsqueda para consultarlos luego.</p>
+            <p class="text-xs text-slate-500">Guarda artículos desde la pestaña de Búsqueda para consultarlos, compartirlos o exportarlos más tarde.</p>
           </div>
         `;
         lucide.createIcons();
@@ -1809,28 +2024,50 @@
       }
 
       container.innerHTML = '';
-      savedLibrary.forEach((art) => {
+      savedLibrary.forEach((item, index) => {
         const card = document.createElement('div');
-        card.className = "bg-[#0b121c] border border-[#182635] rounded-xl p-4 transition-all hover:border-[#32E6E2]/40";
+        card.className = "bg-[#0b121c] border border-[#182635] hover:border-[#32E6E2]/50 rounded-xl p-3.5 sm:p-4 transition-all group animate-fade-in";
+        card.style.animationDelay = `${index * 40}ms`;
+
         card.innerHTML = `
-          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
             <div class="space-y-1.5 flex-1 min-w-0">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="px-2 py-0.5 bg-[#060B10] text-[#32E6E2] border border-[#182635] rounded text-[10px] font-mono">${art.doi}</span>
-                <span class="text-xs text-slate-400">${art.year} • <span class="italic text-slate-300">${art.journal}</span></span>
+              <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <span class="px-2 py-0.5 bg-[#060B10] text-[#32E6E2] border border-[#182635] rounded text-[10px] sm:text-[11px] font-mono font-semibold break-all">
+                  DOI: ${item.doi}
+                </span>
+                <span class="text-[11px] sm:text-xs text-slate-400">
+                  ${item.year} • <span class="italic text-slate-300">${item.journal}</span>
+                </span>
               </div>
-              <h4 class="font-bold text-white text-sm sm:text-base leading-snug break-words">${art.title}</h4>
-              <p class="text-xs text-slate-400 line-clamp-1"><strong>Autores:</strong> ${art.authors}</p>
+              <h4 class="font-bold text-white text-sm sm:text-base group-hover:text-[#32E6E2] transition-colors leading-snug break-words">
+                ${item.title}
+              </h4>
+              <p class="text-xs text-slate-400 line-clamp-1 break-words">
+                <strong>Autores:</strong> ${item.authors}
+              </p>
             </div>
-            <div class="flex items-center space-x-2 self-end sm:self-start flex-shrink-0">
-              <button onclick="openShareModal('${art.doi}')" class="p-2 bg-[#060B10] text-slate-300 hover:text-[#32E6E2] hover:bg-[#182635] border border-[#182635] rounded-lg text-xs transition-colors" title="Compartir artículo">
+            
+            <div class="flex items-center space-x-2 self-end sm:self-start flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-[#182635] w-full sm:w-auto justify-end">
+              <button 
+                onclick="openShareModal('${item.doi}')"
+                title="Compartir este artículo"
+                class="p-2 sm:p-2.5 bg-[#060B10] text-slate-400 hover:text-[#32E6E2] hover:bg-[#182635] rounded-lg border border-[#182635] text-xs transition-colors"
+              >
                 <i data-lucide="share-2" class="w-4 h-4"></i>
               </button>
-              <button onclick="toggleSaveArticle('${art.doi}')" class="p-2 bg-red-950/40 text-red-400 hover:bg-red-900/40 border border-red-800/60 rounded-lg text-xs" title="Eliminar">
+              <button 
+                onclick="toggleSaveArticle('${item.doi}')"
+                title="Quitar de biblioteca"
+                class="p-2 sm:p-2.5 bg-red-950/40 text-red-400 hover:bg-red-900/50 rounded-lg border border-red-800/60 text-xs transition-colors"
+              >
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
-              <button onclick="inspectArticle('${art.doi}')" class="px-3 py-2 bg-[#32E6E2] text-[#060B10] font-bold rounded-lg text-xs flex items-center space-x-1">
-                <span>Ficha</span>
+              <button 
+                onclick="inspectArticle('${item.doi}')"
+                class="flex-1 sm:flex-initial px-3.5 py-2 bg-[#32E6E2] hover:bg-[#2bd8d4] text-[#060B10] font-bold rounded-lg text-xs flex items-center justify-center space-x-1.5 transition-colors shadow"
+              >
+                <span>Ver Ficha</span>
                 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
               </button>
             </div>
@@ -1838,189 +2075,184 @@
         `;
         container.appendChild(card);
       });
+
       lucide.createIcons();
     }
 
+    function copyToClipboard(text, label = 'Texto') {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(`${label} copiado al portapapeles`);
+        }).catch(() => {
+          fallbackCopyText(text, label);
+        });
+      } else {
+        fallbackCopyText(text, label);
+      }
+    }
+
+    function fallbackCopyText(text, label) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(`${label} copiado al portapapeles`);
+      } catch (e) {
+        showToast('No se pudo copiar el texto');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      if (!toast || !toastMessage) return;
+
+      toastMessage.textContent = msg;
+      toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+      }, 3000);
+    }
+
     function clearLibrary() {
-      if (savedLibrary.length === 0) return;
-      savedLibrary = [];
-      localStorage.setItem('scholar_library', JSON.stringify(savedLibrary));
-      updateLibraryBadge();
-      renderLibrary();
-      showToast('Biblioteca vaciada');
+      if (savedLibrary.length === 0) {
+        showToast('La biblioteca ya está vacía');
+        return;
+      }
+      if (confirm('¿Estás seguro de que deseas vaciar toda tu biblioteca guardada?')) {
+        savedLibrary = [];
+        localStorage.setItem('scholar_library', JSON.stringify(savedLibrary));
+        updateLibraryBadge();
+        renderLibrary();
+        showToast('Biblioteca vaciada');
+      }
     }
 
-    function downloadSingleFile(doi, type) {
-      const art = (activeArticle && activeArticle.doi === doi) 
-        ? activeArticle 
-        : (currentArticleList.find(a => a.doi === doi) || savedLibrary.find(a => a.doi === doi));
-      if (!art) return;
-
-      const content = type === 'bib' ? art.bibtex : art.ris;
-      const filename = `${art.doi.replace(/[^a-zA-Z0-9]/g, '_')}.${type}`;
-      downloadBlob(content, filename, 'text/plain');
-    }
-
-    function exportLibrary(type) {
+    function exportLibrary(format) {
       if (savedLibrary.length === 0) {
         showToast('No hay artículos guardados para exportar');
         return;
       }
 
-      const content = savedLibrary.map(a => type === 'bibtex' ? a.bibtex : a.ris).join('\n\n');
-      const filename = `mi_biblioteca_scholar.${type === 'bibtex' ? 'bib' : 'ris'}`;
-      downloadBlob(content, filename, 'text/plain');
+      let content = '';
+      let filename = `biblioteca_academic_${new Date().toISOString().slice(0,10)}`;
+
+      if (format === 'bibtex') {
+        content = savedLibrary.map(item => item.bibtex).join('\n\n');
+        filename += '.bib';
+      } else if (format === 'ris') {
+        content = savedLibrary.map(item => item.ris).join('\n\n');
+        filename += '.ris';
+      }
+
+      downloadTextFile(content, filename);
+      showToast(`Biblioteca exportada como .${format.toUpperCase()}`);
     }
 
-    function downloadBlob(content, filename, contentType) {
-      const blob = new Blob([content], { type: contentType });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+    function downloadSingleFile(doi, format) {
+      const art = (activeArticle && activeArticle.doi === doi) 
+        ? activeArticle 
+        : (savedLibrary.find(a => a.doi === doi) || currentArticleList.find(a => a.doi === doi));
+      if (!art) return;
+
+      let content = format === 'bib' ? art.bibtex : art.ris;
+      let filename = `citation_${cleanDoi(doi).replace(/[^a-z0-9]/gi, '_')}.${format}`;
+      downloadTextFile(content, filename);
+      showToast(`Archivo .${format.toUpperCase()} descargado`);
+    }
+
+    function downloadTextFile(content, filename) {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
     }
 
     async function processBatch() {
-      const text = document.getElementById('batchInput').value;
-      const doiMatches = text.match(/10\.\d{4,9}\/[-._;()/:A-Za-z0-9]+/gi) || [];
-      const uniqueDois = [...new Set(doiMatches.map(cleanDoi))];
+      const input = document.getElementById('batchInput')?.value;
+      if (!input || !input.trim()) {
+        showToast('Por favor, pega un texto con DOIs');
+        return;
+      }
+
+      const doiRegex = /\b10\.\d{4,9}\/[-._;()/:A-Za-z0-9]+/g;
+      const matches = Array.from(new Set(input.match(doiRegex) || []));
 
       const batchResults = document.getElementById('batchResults');
-      batchResults.classList.remove('hidden');
+      if (!batchResults) return;
 
-      if (uniqueDois.length === 0) {
+      if (matches.length === 0) {
+        batchResults.classList.remove('hidden');
         batchResults.innerHTML = `
-          <div class="p-3.5 bg-red-950/40 border border-red-800 text-red-300 rounded-xl text-xs font-semibold">
-            No se detectaron identificadores DOI válidos en el texto.
+          <div class="bg-amber-950/40 border border-amber-800/60 rounded-xl p-4 text-amber-200 text-xs">
+            No se detectaron identificadores DOI válidos en el texto ingresado.
           </div>
         `;
         return;
       }
 
+      batchResults.classList.remove('hidden');
       batchResults.innerHTML = `
-        <div class="text-xs font-bold text-slate-300">
-          Se detectaron ${uniqueDois.length} DOIs. Procesando metadatos...
+        <div class="bg-[#0b121c] border border-[#182635] rounded-2xl p-4 sm:p-5 space-y-3">
+          <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+            <i data-lucide="loader-2" class="w-4 h-4 text-[#32E6E2] animate-spin"></i>
+            <span>Procesando ${matches.length} DOIs encontrados...</span>
+          </h3>
+          <div id="batchItemsContainer" class="space-y-2"></div>
         </div>
-        <div id="batchContainer" class="space-y-2.5"></div>
       `;
+      lucide.createIcons();
 
-      const container = document.getElementById('batchContainer');
+      const container = document.getElementById('batchItemsContainer');
 
-      for (const doi of uniqueDois) {
-        const itemEl = document.createElement('div');
-        itemEl.className = "bg-[#0b121c] border border-[#182635] p-3 rounded-xl text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2";
-        itemEl.innerHTML = `<span class="font-mono text-slate-400 break-all">Procesando: ${doi}...</span>`;
-        container.appendChild(itemEl);
-
+      for (const doiRaw of matches) {
+        const clean = cleanDoi(doiRaw);
         try {
-          const art = await fetchArticleFullDetails(doi);
+          const art = await fetchArticleFullDetails(clean);
+          
+          const isSaved = savedLibrary.some(s => s.doi === art.doi);
+          if (!isSaved) {
+            savedLibrary.push(art);
+          }
+
+          const itemEl = document.createElement('div');
+          itemEl.className = "p-3 bg-[#060B10] border border-[#182635] rounded-xl flex items-center justify-between text-xs";
           itemEl.innerHTML = `
-            <div class="min-w-0 flex-1">
-              <span class="font-bold text-white block break-words">${art.title}</span>
-              <p class="text-[11px] text-slate-400 break-words">${art.authors} (${art.year}) • <span class="font-mono break-all">${art.doi}</span></p>
+            <div class="min-w-0 flex-1 pr-3">
+              <p class="font-bold text-white truncate">${art.title}</p>
+              <p class="text-[11px] text-slate-400 font-mono">${art.doi}</p>
             </div>
-            <button onclick="inspectArticle('${art.doi}'); switchTab('search');" class="px-3 py-1 bg-[#32E6E2] text-[#060B10] font-bold rounded text-[11px] self-end sm:self-auto flex-shrink-0">Ver Ficha</button>
+            <span class="px-2 py-1 bg-emerald-950 text-emerald-400 rounded text-[10px] font-bold flex-shrink-0">Añadido</span>
           `;
+          container.appendChild(itemEl);
         } catch (e) {
-          itemEl.innerHTML = `<span class="text-red-400 font-mono break-all">Error al obtener DOI ${doi}</span>`;
+          const itemEl = document.createElement('div');
+          itemEl.className = "p-3 bg-[#060B10] border border-red-900/40 rounded-xl flex items-center justify-between text-xs";
+          itemEl.innerHTML = `
+            <div class="min-w-0 flex-1 pr-3">
+              <p class="font-bold text-red-300 font-mono">${clean}</p>
+              <p class="text-[11px] text-red-400">Error al obtener metadatos</p>
+            </div>
+            <span class="px-2 py-1 bg-red-950 text-red-400 rounded text-[10px] font-bold flex-shrink-0">Falló</span>
+          `;
+          container.appendChild(itemEl);
         }
       }
+
+      localStorage.setItem('scholar_library', JSON.stringify(savedLibrary));
+      updateLibraryBadge();
+      showToast(`Procesamiento finalizado. Guardados en biblioteca.`);
     }
-
-    function copyToClipboard(text, label) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast(`¡${label} copiado al portapapeles!`);
-        }).catch(() => {
-          fallbackCopyToClipboard(text, label);
-        });
-      } else {
-        fallbackCopyToClipboard(text, label);
-      }
-    }
-
-    function fallbackCopyToClipboard(text, label) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      showToast(`¡${label} copiado al portapapeles!`);
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMessage').textContent = msg;
-      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
-      toast.classList.add('opacity-100', 'translate-y-0');
-      
-      setTimeout(() => {
-        toast.classList.remove('opacity-100', 'translate-y-0');
-        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
-      }, 2500);
-    }
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/buscador-academico/sw.js', { scope: '/buscador-academico/' })
-          .then(reg => console.log('PWA Service Worker registrado:', reg.scope))
-          .catch(err => console.error('Error en Service Worker:', err));
-      });
-    }
-  <!-- Banner de aviso para instalar la PWA -->
-  <div id="mensaje-instalacion" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #060B10; border: 1px solid #1f2937; color: #ffffff; padding: 12px 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 9999; align-items: center; gap: 12px;">
-    <span>Existe una versión instalable de esta app.</span>
-    <button id="btn-instalar-pwa" style="background: #008080; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">
-      Instalar
-    </button>
-  </div>
-
-  <!-- Script de PWA y manejo del evento -->
-  <script>
-    // Registro del Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
-      });
-    }
-
-    // Lógica para el banner de instalación
-    let eventoInstalacion;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      eventoInstalacion = e;
-
-      const banner = document.getElementById('mensaje-instalacion');
-      if (banner) {
-        banner.style.display = 'flex';
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const btnInstalar = document.getElementById('btn-instalar-pwa');
-      
-      btnInstalar?.addEventListener('click', async () => {
-        if (!eventoInstalacion) return;
-
-        eventoInstalacion.prompt();
-
-        const choice = await eventoInstalacion.userChoice;
-        if (choice.outcome === 'accepted') {
-          console.log('El usuario instaló la PWA');
-        }
-
-        eventoInstalacion = null;
-        const banner = document.getElementById('mensaje-instalacion');
-        if (banner) banner.style.display = 'none';
-      });
-    });
   </script>
 </body>
 </html>
